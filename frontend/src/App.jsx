@@ -5,10 +5,14 @@ import SoilReportAdvisor from './pages/SoilReportAdvisor';
 import QuestionnaireAdvisor from './pages/QuestionnaireAdvisor';
 import SoilTestingLabs from './pages/SoilTestingLabs';
 import GovernmentSchemes from './pages/GovernmentSchemes';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import translations from './locales/translations';
 import './styles/App.css';
 
-function App() {
+function AppContent() {
   const [activeNav, setActiveNav] = useState('home');
+  const { language, changeLanguage } = useLanguage();
+  const t = translations[language] || translations['en'];
 
   return (
     <Router>
@@ -16,8 +20,20 @@ function App() {
         <header className="header">
           <div className="container">
             <div className="logo-section">
-              <h1 className="logo">🌾 KrishiSaarthi AI</h1>
-              <p className="tagline">Smart Farming Advisor</p>
+              <h1 className="logo">🌾 {t.appTitle}</h1>
+              <p className="tagline">{t.tagline}</p>
+            </div>
+            <div className="language-selector">
+              <select 
+                className="lang-dropdown"
+                value={language}
+                onChange={(e) => changeLanguage(e.target.value)}
+                title={t.language}
+              >
+                <option value="en">🇬🇧 English</option>
+                <option value="hi">🇮🇳 हिंदी</option>
+                <option value="gu">🇮🇳 ગુજરાતી</option>
+              </select>
             </div>
           </div>
         </header>
@@ -27,27 +43,27 @@ function App() {
             <ul className="nav-menu">
               <li>
                 <Link to="/" onClick={() => setActiveNav('home')} className={activeNav === 'home' ? 'active' : ''}>
-                  Home
+                  {t.navHome}
                 </Link>
               </li>
               <li>
                 <Link to="/soil-report" onClick={() => setActiveNav('soil')} className={activeNav === 'soil' ? 'active' : ''}>
-                  Soil Report
+                  {t.navSoilReport}
                 </Link>
               </li>
               <li>
                 <Link to="/questionnaire" onClick={() => setActiveNav('quest')} className={activeNav === 'quest' ? 'active' : ''}>
-                  Questionnaire
+                  {t.navQuestionnaire}
                 </Link>
               </li>
               <li>
                 <Link to="/soil-labs" onClick={() => setActiveNav('labs')} className={activeNav === 'labs' ? 'active' : ''}>
-                  Testing Labs
+                  {t.navSoilLabs}
                 </Link>
               </li>
               <li>
                 <Link to="/schemes" onClick={() => setActiveNav('schemes')} className={activeNav === 'schemes' ? 'active' : ''}>
-                  Schemes
+                  {t.navSchemes}
                 </Link>
               </li>
             </ul>
@@ -66,12 +82,20 @@ function App() {
 
         <footer className="footer">
           <div className="container">
-            <p>&copy; 2024 KrishiSaarthi AI - Empowering Farmers with Smart Solutions</p>
-            <p>For more information, contact your local agricultural officer</p>
+            <p>{t.footerCopyright}</p>
+            <p>{t.footerContact}</p>
           </div>
         </footer>
       </div>
     </Router>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 

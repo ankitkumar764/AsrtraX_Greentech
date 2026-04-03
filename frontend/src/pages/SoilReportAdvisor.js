@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import translations from '../locales/translations';
 import api from '../services/api';
 import '../styles/Forms.css';
 
 function SoilReportAdvisor() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations['en'];
+
   const [formData, setFormData] = useState({
     soilN: '',
     soilP: '',
@@ -33,7 +38,7 @@ function SoilReportAdvisor() {
       const response = await api.post('/recommendations/soil-report', formData);
       setResults(response.data);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to get recommendations');
+      setError(err.response?.data?.error || t.tryAgain);
     } finally {
       setLoading(false);
     }
@@ -43,15 +48,15 @@ function SoilReportAdvisor() {
     <div className="advisor-page">
       <div className="container">
         <div className="page-header">
-          <h1>📊 Soil Report Advisor</h1>
-          <p>Enter your soil test parameters for precise fertilizer recommendations</p>
+          <h1>{t.soilReportTitle}</h1>
+          <p>{t.soilReportDesc}</p>
         </div>
 
         <div className="advisor-grid">
           <div className="form-section">
             <form onSubmit={handleSubmit} className="advisor-form">
               <div className="form-group">
-                <label>Soil Nitrogen (N) - mg/kg</label>
+                <label>{t.soilNitrogen}</label>
                 <input
                   type="number"
                   name="soilN"
@@ -64,7 +69,7 @@ function SoilReportAdvisor() {
               </div>
 
               <div className="form-group">
-                <label>Soil Phosphorus (P) - mg/kg</label>
+                <label>{t.soilPhosphorus}</label>
                 <input
                   type="number"
                   name="soilP"
@@ -77,7 +82,7 @@ function SoilReportAdvisor() {
               </div>
 
               <div className="form-group">
-                <label>Soil Potassium (K) - mg/kg</label>
+                <label>{t.soilPotassium}</label>
                 <input
                   type="number"
                   name="soilK"
@@ -90,7 +95,7 @@ function SoilReportAdvisor() {
               </div>
 
               <div className="form-group">
-                <label>Soil pH</label>
+                <label>{t.soilPH}</label>
                 <input
                   type="number"
                   name="pH"
@@ -105,7 +110,7 @@ function SoilReportAdvisor() {
               </div>
 
               <div className="form-group">
-                <label>Crop Name *</label>
+                <label>{t.cropCurrent} *</label>
                 <select
                   name="crop"
                   value={formData.crop}
@@ -113,18 +118,18 @@ function SoilReportAdvisor() {
                   required
                 >
                   <option value="">Select a crop</option>
-                  <option value="wheat">Wheat</option>
-                  <option value="rice">Rice</option>
-                  <option value="maize">Maize</option>
-                  <option value="cotton">Cotton</option>
-                  <option value="sugarcane">Sugarcane</option>
-                  <option value="pulses">Pulses</option>
-                  <option value="vegetables">Vegetables</option>
+                  <option value="wheat">{t.wheat}</option>
+                  <option value="rice">{t.rice}</option>
+                  <option value="maize">{t.maize}</option>
+                  <option value="cotton">{t.cotton}</option>
+                  <option value="sugarcane">{t.sugarcane}</option>
+                  <option value="pulses">{t.pulses}</option>
+                  <option value="vegetables">{t.vegetables}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Budget (₹) - Optional</label>
+                <label>{t.budget} - {t.optional}</label>
                 <input
                   type="number"
                   name="budget"
@@ -136,7 +141,7 @@ function SoilReportAdvisor() {
               </div>
 
               <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? 'Analyzing...' : 'Get Recommendations'}
+                {loading ? t.loading : t.getRecommendations}
               </button>
             </form>
           </div>
@@ -144,85 +149,87 @@ function SoilReportAdvisor() {
           <div className="results-section">
             {error && (
               <div className="alert alert-error">
-                <strong>Error:</strong> {error}
+                <strong>{t.error}:</strong> {error}
               </div>
             )}
 
             {results && (
               <div className="results">
-                <h2>📋 Recommendations for {results.crop}</h2>
+                <h2>📋 {t.recommendationsFor} {results.crop}</h2>
 
                 <div className="soil-analysis">
-                  <h3>Current Soil Status</h3>
+                  <h3>{t.currentSoilStatus}</h3>
                   <div className="info-grid">
                     <div className="info-box">
-                      <span className="label">Nitrogen (N)</span>
+                      <span className="label">{t.nitrogenNLabel}</span>
                       <span className="value">{results.soilAnalysis.nitrogen} mg/kg</span>
                     </div>
                     <div className="info-box">
-                      <span className="label">Phosphorus (P)</span>
+                      <span className="label">{t.phosphorusLabel}</span>
                       <span className="value">{results.soilAnalysis.phosphorus} mg/kg</span>
                     </div>
                     <div className="info-box">
-                      <span className="label">Potassium (K)</span>
+                      <span className="label">{t.potassiumLabel}</span>
                       <span className="value">{results.soilAnalysis.potassium} mg/kg</span>
                     </div>
                     <div className="info-box">
-                      <span className="label">Soil pH</span>
+                      <span className="label">pH</span>
                       <span className="value">{results.soilAnalysis.pH}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="npk-requirements">
-                  <h3>NPK Requirements</h3>
+                  <h3>{t.npkRequirement}</h3>
                   <div className="npk-grid">
                     <div className="npk-item">
-                      <h4>Nitrogen</h4>
-                      <p className="required">Required: {results.npkRequirements.nitrogen.required} kg/ha</p>
-                      <p className="deficit">Deficit: {results.npkRequirements.nitrogen.deficit} kg/ha</p>
+                      <h4>{t.nitrogen}</h4>
+                      <p className="required">{t.requiredNPK}: {results.npkRequirements.nitrogen.required} kg/ha</p>
+                      <p className="deficit">{t.deficitNPK}: {results.npkRequirements.nitrogen.deficit} kg/ha</p>
                     </div>
                     <div className="npk-item">
-                      <h4>Phosphorus</h4>
-                      <p className="required">Required: {results.npkRequirements.phosphorus.required} kg/ha</p>
-                      <p className="deficit">Deficit: {results.npkRequirements.phosphorus.deficit} kg/ha</p>
+                      <h4>{t.phosphorus}</h4>
+                      <p className="required">{t.requiredNPK}: {results.npkRequirements.phosphorus.required} kg/ha</p>
+                      <p className="deficit">{t.deficitNPK}: {results.npkRequirements.phosphorus.deficit} kg/ha</p>
                     </div>
                     <div className="npk-item">
-                      <h4>Potassium</h4>
-                      <p className="required">Required: {results.npkRequirements.potassium.required} kg/ha</p>
-                      <p className="deficit">Deficit: {results.npkRequirements.potassium.deficit} kg/ha</p>
+                      <h4>{t.potassium}</h4>
+                      <p className="required">{t.requiredNPK}: {results.npkRequirements.potassium.required} kg/ha</p>
+                      <p className="deficit">{t.deficitNPK}: {results.npkRequirements.potassium.deficit} kg/ha</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="fertilizer-plan">
-                  <h3>💊 Recommended Fertilizer Schedule</h3>
+                  <h3>💊 {t.fertilizers}</h3>
                   <div className="cost-summary">
-                    <span>Total Cost: <strong>₹{results.fertilizerPlan.totalCost.toFixed(0)}</strong> / hectare</span>
+                    <span>{t.totalCostLabel}: <strong>₹{results.fertilizerPlan.totalCost.toFixed(0)}</strong> / hectare</span>
                   </div>
                   {results.fertilizerPlan.recommendations.map((rec, idx) => (
                     <div key={idx} className="fertilizer-item">
                       <h4>{rec.name}</h4>
-                      <p className="bags">📦 Quantity: {rec.bags} bags (50kg each)</p>
-                      <p className="timing">⏰ Timing: {rec.timing}</p>
+                      <p className="bags">📦 {t.quantityLabel}: {rec.bags} bags (50kg each)</p>
+                      <p className="timing">⏰ {t.timingLabel}: {rec.timing}</p>
                       <p className="reason">💡 {rec.reason}</p>
-                      <p className="cost">💰 Cost: ₹{rec.cost.toFixed(0)}</p>
+                      <p className="cost">💰 {t.costLabel}: ₹{rec.cost.toFixed(0)}</p>
                     </div>
                   ))}
 
                   <div className="notes">
-                    <h4>Important Notes:</h4>
+                    <h4>{t.importantNotesLabel}</h4>
                     {results.fertilizerPlan.notes.map((note, idx) => (
                       <p key={idx}>{note}</p>
                     ))}
                   </div>
                 </div>
+
+                <p className="note-text">{t.note}</p>
               </div>
             )}
 
             {!results && !error && (
               <div className="placeholder">
-                <p>Enter your soil test results to get personalized fertilizer recommendations</p>
+                <p>{t.enterSoilTestResults}</p>
               </div>
             )}
           </div>

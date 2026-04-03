@@ -1,83 +1,88 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import translations from '../locales/translations';
 import '../styles/App.css';
 
 function Home() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations['en'];
+
   return (
     <div className="home-page">
       <section className="hero">
         <div className="hero-content">
-          <h1>Welcome to KrishiSaarthi AI</h1>
-          <p>Your Smart Farming Advisor</p>
-          <p className="subtitle">Get expert crop and fertilizer recommendations tailored to your farm</p>
+          <h1>{t.homeWelcome}</h1>
+          <p>{t.homeSubtitle}</p>
+          <p className="subtitle">{t.homeDescription}</p>
         </div>
       </section>
 
       <section className="features">
         <div className="container">
-          <h2>How it works</h2>
+          <h2>{t.homeHowItWorks}</h2>
           <div className="features-grid">
             <div className="feature-card">
               <div className="feature-icon">📋</div>
-              <h3>Two Input Methods</h3>
-              <p>Choose between detailed soil reports or simple questionnaire</p>
+              <h3>{t.featureTwoInputs}</h3>
+              <p>{t.featureTwoInputsDesc}</p>
               <ul>
-                <li>Soil Test Report: Upload your NPK, pH values</li>
-                <li>Questionnaire: Answer simple questions about your farm</li>
+                <li>{t.featureSoilTest}</li>
+                <li>{t.featureQuestionnaire}</li>
               </ul>
             </div>
 
             <div className="feature-card">
               <div className="feature-icon">🎯</div>
-              <h3>Smart Recommendations</h3>
-              <p>Get personalized crop suggestions</p>
+              <h3>{t.featureSmart}</h3>
+              <p>{t.featureSmartDesc}</p>
               <ul>
-                <li>Top 2-3 suitable crops for your farm</li>
-                <li>Detailed matchscore and reasoning</li>
-                <li>Practical growing tips</li>
+                <li>{t.featureTopCrops}</li>
+                <li>{t.featureMatchScore}</li>
+                <li>{t.featureTips}</li>
               </ul>
             </div>
 
             <div className="feature-card">
               <div className="feature-icon">💊</div>
-              <h3>Fertilizer Planning</h3>
-              <p>Optimize your fertilizer usage</p>
+              <h3>{t.featureFertilizer}</h3>
+              <p>{t.featureFertilizerDesc}</p>
               <ul>
-                <li>NPK requirement calculation</li>
-                <li>Detailed fertilizer schedule</li>
-                <li>Cost-saving suggestions</li>
+                <li>{t.featureNPK}</li>
+                <li>{t.featureFertilizerSchedule}</li>
+                <li>{t.featureCostSaving}</li>
               </ul>
             </div>
 
             <div className="feature-card">
               <div className="feature-icon">🔬</div>
-              <h3>Soil Testing Support</h3>
-              <p>Find nearby soil testing labs</p>
+              <h3>{t.featureSoilTesting}</h3>
+              <p>{t.featureSoilTestingDesc}</p>
               <ul>
-                <li>Lab locations and contact info</li>
-                <li>Testing costs and turnaround time</li>
-                <li>Complete testing guide</li>
+                <li>{t.featureLabLocations}</li>
+                <li>{t.featureTestingCosts}</li>
+                <li>{t.featureTestingGuide}</li>
               </ul>
             </div>
 
             <div className="feature-card">
               <div className="feature-icon">📜</div>
-              <h3>Government Schemes</h3>
-              <p>Explore available benefits</p>
+              <h3>{t.featureSchemes}</h3>
+              <p>{t.featureSchemesDesc}</p>
               <ul>
-                <li>Crop insurance information</li>
-                <li>Direct income support schemes</li>
-                <li>Subsidy details</li>
+                <li>{t.featureCropInsurance}</li>
+                <li>{t.featureDirectIncome}</li>
+                <li>{t.featureSubsidy}</li>
               </ul>
             </div>
 
             <div className="feature-card">
               <div className="feature-icon">💰</div>
-              <h3>Budget Friendly</h3>
-              <p>Optimize your farming costs</p>
+              <h3>{t.featureBudget}</h3>
+              <p>{t.featureBudgetDesc}</p>
               <ul>
-                <li>Cost-effective fertilizer choices</li>
-                <li>Seasonal pricing</li>
-                <li>Subsidy information</li>
+                <li>{t.featureCostEffective}</li>
+                <li>{t.featureSeasonalPricing}</li>
+                <li>{t.featureSubsidyInfo}</li>
               </ul>
             </div>
           </div>
@@ -86,14 +91,14 @@ function Home() {
 
       <section className="cta-section">
         <div className="container">
-          <h2>Get Started Today</h2>
-          <p>Choose your preferred method to receive smart farming recommendations</p>
+          <h2>{t.homeGetStarted}</h2>
+          <p>{t.homeChooseMethod}</p>
           <div className="cta-buttons">
             <a href="/soil-report" className="btn btn-primary">
-              📊 Use Soil Report
+              {t.homeUseSoilReport}
             </a>
             <a href="/questionnaire" className="btn btn-secondary">
-              ❓ Answer Questionnaire
+              {t.homeAnswerQuestionnaire}
             </a>
           </div>
         </div>
@@ -101,23 +106,23 @@ function Home() {
 
       <section className="info-section">
         <div className="container">
-          <h2>Why Choose KrishiSaarthi?</h2>
+          <h2>{t.whyChoose}</h2>
           <div className="info-grid">
             <div className="info-item">
-              <h3>Easy to Use</h3>
-              <p>Simple interface designed for all farmers, no technical knowledge needed</p>
+              <h3>{t.easyToUse}</h3>
+              <p>{t.easyToUseDesc}</p>
             </div>
             <div className="info-item">
-              <h3>Data-Driven</h3>
-              <p>Recommendations based on crop science and proven agricultural practices</p>
+              <h3>{t.dataDriven}</h3>
+              <p>{t.dataDrivenDesc}</p>
             </div>
             <div className="info-item">
-              <h3>Cost-Effective</h3>
-              <p>Maximize yield while minimizing input costs through smart planning</p>
+              <h3>{t.costEffective}</h3>
+              <p>{t.costEffectiveDesc}</p>
             </div>
             <div className="info-item">
-              <h3>Personalized</h3>
-              <p>Recommendations tailored to your specific farm conditions and budget</p>
+              <h3>{t.personalized}</h3>
+              <p>{t.personalizedDesc}</p>
             </div>
           </div>
         </div>

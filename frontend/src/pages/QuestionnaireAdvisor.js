@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import translations from '../locales/translations';
 import api from '../services/api';
 import '../styles/Forms.css';
 
 function QuestionnaireAdvisor() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations['en'];
+
   const [formData, setFormData] = useState({
     soilType: '',
     soilTexture: '',
@@ -45,7 +50,7 @@ function QuestionnaireAdvisor() {
       const response = await api.post('/recommendations/get', payload);
       setResults(response.data);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to get recommendations');
+      setError(err.response?.data?.error || t.tryAgain);
     } finally {
       setLoading(false);
     }
@@ -55,15 +60,15 @@ function QuestionnaireAdvisor() {
     <div className="advisor-page">
       <div className="container">
         <div className="page-header">
-          <h1>❓ Questionnaire Advisor</h1>
-          <p>Answer simple questions to get crop and fertilizer recommendations</p>
+          <h1>{t.questionnaireTitle}</h1>
+          <p>{t.questionnaireDesc}</p>
         </div>
 
         <div className="advisor-grid">
           <div className="form-section">
             <form onSubmit={handleSubmit} className="advisor-form">
               <div className="form-group">
-                <label>Soil Type *</label>
+                <label>{t.soilType} *</label>
                 <select
                   name="soilType"
                   value={formData.soilType}
@@ -71,16 +76,16 @@ function QuestionnaireAdvisor() {
                   required
                 >
                   <option value="">Select soil type</option>
-                  <option value="sandy">Sandy</option>
-                  <option value="clay">Clay</option>
-                  <option value="loamy">Loamy</option>
-                  <option value="black">Black Soil</option>
-                  <option value="unknown">Unknown</option>
+                  <option value="sandy">{t.sandy}</option>
+                  <option value="clay">{t.clay}</option>
+                  <option value="loamy">{t.loamy}</option>
+                  <option value="black">{t.blackSoil}</option>
+                  <option value="unknown">{t.unknown}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Soil Texture *</label>
+                <label>{t.soilTexture} *</label>
                 <select
                   name="soilTexture"
                   value={formData.soilTexture}
@@ -88,77 +93,77 @@ function QuestionnaireAdvisor() {
                   required
                 >
                   <option value="">Select texture</option>
-                  <option value="dry">Dry</option>
-                  <option value="sticky">Sticky/Wet</option>
-                  <option value="medium">Medium/Balanced</option>
+                  <option value="dry">{t.dry}</option>
+                  <option value="sticky">{t.sticky}</option>
+                  <option value="medium">{t.medium}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Previous Crop</label>
+                <label>{t.previousCrop}</label>
                 <select
                   name="previousCrop"
                   value={formData.previousCrop}
                   onChange={handleChange}
                 >
                   <option value="">Select previous crop</option>
-                  <option value="wheat">Wheat</option>
-                  <option value="rice">Rice</option>
-                  <option value="maize">Maize</option>
-                  <option value="cotton">Cotton</option>
-                  <option value="sugarcane">Sugarcane</option>
-                  <option value="pulses">Pulses</option>
-                  <option value="vegetables">Vegetables</option>
-                  <option value="fallow">Fallow/Unused</option>
+                  <option value="wheat">{t.wheat}</option>
+                  <option value="rice">{t.rice}</option>
+                  <option value="maize">{t.maize}</option>
+                  <option value="cotton">{t.cotton}</option>
+                  <option value="sugarcane">{t.sugarcane}</option>
+                  <option value="pulses">{t.pulses}</option>
+                  <option value="vegetables">{t.vegetables}</option>
+                  <option value="fallow">{t.fallow}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Fertilizer Usage History *</label>
+                <label>{t.fertilizingHistoryLabel} *</label>
                 <select
                   name="fertilizationHistory"
                   value={formData.fertilizationHistory}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select usage level</option>
-                  <option value="low">Low (Minimal use)</option>
-                  <option value="moderate">Moderate (Regular use)</option>
-                  <option value="excessive">Excessive (Overused)</option>
+                  <option value="">{t.selectUsageLevel}</option>
+                  <option value="low">{t.lowMinimal}</option>
+                  <option value="moderate">{t.moderateRegular}</option>
+                  <option value="excessive">{t.excessiveOverused}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Water Availability *</label>
+                <label>{t.waterAvailability} *</label>
                 <select
                   name="waterAvailability"
                   value={formData.waterAvailability}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select availability</option>
-                  <option value="low">Low (Rain-fed)</option>
-                  <option value="moderate">Moderate (Seasonal irrigation)</option>
-                  <option value="high">High (Permanent irrigation)</option>
+                  <option value="">{t.selectAvailability}</option>
+                  <option value="low">{t.lowRainfed}</option>
+                  <option value="moderate">{t.moderateSeasonal}</option>
+                  <option value="high">{t.highPermanent}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Season *</label>
+                <label>{t.season} *</label>
                 <select
                   name="season"
                   value={formData.season}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select season</option>
-                  <option value="kharif">Kharif (Monsoon)</option>
-                  <option value="rabi">Rabi (Winter)</option>
+                  <option value="">{t.selectSeason}</option>
+                  <option value="kharif">{t.kharifMonsoon}</option>
+                  <option value="rabi">{t.rabiWinter}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Location/State</label>
+                <label>{t.location}</label>
                 <select
                   name="location"
                   value={formData.location}
@@ -174,7 +179,7 @@ function QuestionnaireAdvisor() {
               </div>
 
               <div className="form-group">
-                <label>Budget (₹)</label>
+                <label>{t.budget}</label>
                 <input
                   type="number"
                   name="budget"
@@ -186,18 +191,18 @@ function QuestionnaireAdvisor() {
               </div>
 
               <div className="form-group">
-                <label>Any Crop Issues?</label>
+                <label>{t.anyCropIssues}</label>
                 <textarea
                   name="cropIssues"
                   value={formData.cropIssues}
                   onChange={handleChange}
-                  placeholder="e.g., Yellow leaves, pest damage, low yield"
+                  placeholder={t.cropIssuesPlaceholder}
                   rows="3"
                 ></textarea>
               </div>
 
               <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? 'Analyzing...' : 'Get Recommendations'}
+                {loading ? t.loading : t.getRecommendations}
               </button>
             </form>
           </div>
@@ -205,24 +210,24 @@ function QuestionnaireAdvisor() {
           <div className="results-section">
             {error && (
               <div className="alert alert-error">
-                <strong>Error:</strong> {error}
+                <strong>{t.error}:</strong> {error}
               </div>
             )}
 
             {results && results.success && results.recommendations && (
               <div className="results">
-                <h2>🎯 Crop Recommendations</h2>
+                <h2>🎯 {t.recommendedCrops}</h2>
 
                 {results.recommendations.map((rec, idx) => (
                   <div key={idx} className="recommendation-card">
                     <div className="recommendation-header">
                       <h3>#{rec.rank} - {rec.cropName}</h3>
-                      <span className="match-score">Match: {rec.matchScore.toFixed(0)}%</span>
+                      <span className="match-score">{t.matchLabel}: {rec.matchScore.toFixed(0)}%</span>
                     </div>
 
                     <div className="recommendation-content">
                       <div className="section">
-                        <h4>Why this crop?</h4>
+                        <h4>{t.whyThisCropQuestion}</h4>
                         <ul>
                           {rec.reasoning.map((reason, i) => (
                             <li key={i}>{reason}</li>
@@ -231,34 +236,34 @@ function QuestionnaireAdvisor() {
                       </div>
 
                       <div className="section">
-                        <h4>Estimated Yield</h4>
+                        <h4>{t.estimatedYieldLabel}</h4>
                         <p>{rec.estimatedYield.min} - {rec.estimatedYield.max} tons/hectare</p>
                       </div>
 
                       <div className="section">
-                        <h4>💊 Fertilizer Requirements</h4>
+                        <h4>💊 {t.npkRequirement}</h4>
                         <div className="npk-summary">
-                          <p><strong>Nitrogen:</strong> {rec.npkRequirements.nitrogen.deficit} kg/ha needed</p>
-                          <p><strong>Phosphorus:</strong> {rec.npkRequirements.phosphorus.deficit} kg/ha needed</p>
-                          <p><strong>Potassium:</strong> {rec.npkRequirements.potassium.deficit} kg/ha needed</p>
+                          <p><strong>{t.nitrogen}:</strong> {rec.npkRequirements.nitrogen.deficit} kg/ha {t.needed}</p>
+                          <p><strong>{t.phosphorus}:</strong> {rec.npkRequirements.phosphorus.deficit} kg/ha {t.needed}</p>
+                          <p><strong>{t.potassium}:</strong> {rec.npkRequirements.potassium.deficit} kg/ha {t.needed}</p>
                         </div>
 
-                        <h5>Recommended Fertilizers:</h5>
+                        <h5>{t.recommendedFertilizersLabel}</h5>
                         {rec.fertilizerPlan.recommendations.map((fert, i) => (
                           <div key={i} className="fertilizer-summary">
                             <p><strong>{fert.name}</strong></p>
-                            <p>Quantity: {fert.bags} bags | Timing: {fert.timing}</p>
-                            <p>Cost: ₹{fert.cost.toFixed(0)}</p>
+                            <p>{t.quantityLabel}: {fert.bags} bags | {t.timingLabel}: {fert.timing}</p>
+                            <p>{t.costLabel}: ₹{fert.cost.toFixed(0)}</p>
                           </div>
                         ))}
 
                         <div className="total-cost">
-                          <strong>Total Fertilizer Cost: ₹{rec.fertilizerPlan.totalCost.toFixed(0)} / hectare</strong>
+                          <strong>{t.totalFertilizerCost}: ₹{rec.fertilizerPlan.totalCost.toFixed(0)} / hectare</strong>
                         </div>
                       </div>
 
                       <div className="section">
-                        <h4>💰 Cost Optimization Tips</h4>
+                        <h4>💰 {language === 'en' ? 'Cost Optimization Tips' : 'लागत अनुकूलन सुझाव'}</h4>
                         <ul>
                           {rec.costOptimization.slice(0, 3).map((tip, i) => (
                             <li key={i}>{tip}</li>
@@ -270,7 +275,7 @@ function QuestionnaireAdvisor() {
                 ))}
 
                 <div className="general-advice">
-                  <h3>📌 General Advice</h3>
+                  <h3>📌 {t.generalAdviceLabel}</h3>
                   {results.generalAdvice.map((advice, idx) => (
                     <p key={idx}>{advice}</p>
                   ))}
@@ -280,7 +285,7 @@ function QuestionnaireAdvisor() {
 
             {!results && !error && (
               <div className="placeholder">
-                <p>Answer the questions to receive personalized crop and fertilizer recommendations</p>
+                <p>{language === 'en' ? 'Answer the questions to receive personalized crop and fertilizer recommendations' : 'व्यक्तिगत फसल और उर्वरक सिफारिशें प्राप्त करने के लिए प्रश्नों के उत्तर दें'}</p>
               </div>
             )}
           </div>

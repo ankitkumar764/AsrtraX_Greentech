@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import translations from '../locales/translations';
 import api from '../services/api';
 import '../styles/Utilities.css';
 
 function SoilTestingLabs() {
+  const { language } = useLanguage();
+  const t = translations[language] || translations['en'];
+
   const [selectedState, setSelectedState] = useState('');
   const [labs, setLabs] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -20,7 +25,7 @@ function SoilTestingLabs() {
       const response = await api.get(`/soil-labs/${stateParam}`);
       setLabs(response.data.data || []);
     } catch (err) {
-      setError('Failed to fetch soil testing labs');
+      setError(language === 'en' ? 'Failed to fetch soil testing labs' : 'मिट्टी परीक्षण लैब लाने में विफल');
       setLabs(null);
     } finally {
       setLoading(false);
@@ -31,12 +36,12 @@ function SoilTestingLabs() {
     <div className="utility-page">
       <div className="container">
         <div className="page-header">
-          <h1>🔬 Soil Testing Labs</h1>
-          <p>Find nearby soil testing labs for detailed soil analysis</p>
+          <h1>{t.soilLabsTitle}</h1>
+          <p>{t.soilLabsDesc}</p>
         </div>
 
         <div className="state-selector">
-          <h3>Select Your State:</h3>
+          <h3>{t.selectState}</h3>
           <div className="button-group">
             {states.map(state => (
               <button
@@ -51,7 +56,7 @@ function SoilTestingLabs() {
         </div>
 
         <div className="results">
-          {loading && <p className="loading">Loading labs...</p>}
+          {loading && <p className="loading">{t.loadingLabs}</p>}
 
           {error && (
             <div className="alert alert-error">{error}</div>
@@ -63,74 +68,74 @@ function SoilTestingLabs() {
                 <div key={lab.id} className="lab-card">
                   <h3>{lab.name}</h3>
                   <div className="lab-info">
-                    <p><strong>📍 Location:</strong> {lab.location}</p>
-                    <p><strong>🏢 Address:</strong> {lab.address}</p>
-                    <p><strong>📞 Phone:</strong> {lab.phone}</p>
-                    <p><strong>📧 Email:</strong> {lab.email}</p>
-                    <p><strong>📏 Distance:</strong> {lab.distance} km</p>
-                    <p><strong>💰 Test Cost:</strong> ₹{lab.testCost}</p>
-                    <p><strong>⏱️ Turnaround Time:</strong> {lab.turnaround}</p>
+                    <p><strong>{t.labLocation}:</strong> {lab.location}</p>
+                    <p><strong>{t.labAddress}:</strong> {lab.address}</p>
+                    <p><strong>{t.labPhone}:</strong> {lab.phone}</p>
+                    <p><strong>{t.labEmail}:</strong> {lab.email}</p>
+                    <p><strong>{t.labDistance}:</strong> {lab.distance} {t.km}</p>
+                    <p><strong>{t.labTestCost}:</strong> ₹{lab.testCost}</p>
+                    <p><strong>{t.labTurnaround}:</strong> {lab.turnaround}</p>
                   </div>
-                  <a href={`tel:${lab.phone}`} className="btn btn-small">Call Lab</a>
+                  <a href={`tel:${lab.phone}`} className="btn btn-small">{t.callLab}</a>
                 </div>
               ))}
             </div>
           )}
 
           {labs && labs.length === 0 && !loading && (
-            <p className="no-results">No labs found for this state</p>
+            <p className="no-results">{t.noLabs}</p>
           )}
 
           {!selectedState && !error && (
             <div className="placeholder">
-              <p>Select a state to view available soil testing labs</p>
+              <p>{t.selectStateText}</p>
             </div>
           )}
         </div>
 
         <div className="info-section">
-          <h2>📋 Soil Testing Guide</h2>
+          <h2>📋 {t.soilTestingGuide}</h2>
           <div className="guide-grid">
             <div className="guide-item">
-              <h4>How to Collect Soil Samples?</h4>
+              <h4>{t.collectSoilSamples}</h4>
               <ol>
-                <li>Choose a representative area of your field</li>
-                <li>Take soil from 6-8 spots at 0-15 cm depth (6 inches)</li>
-                <li>Mix samples thoroughly in a clean container</li>
-                <li>Collect 500g-1kg of the mixed sample</li>
-                <li>Allow to dry in shade before sending</li>
+                <li>{t.chooseRepresentativeArea}</li>
+                <li>{t.takeSoilFrom}</li>
+                <li>{t.mixSamplesThoroughly}</li>
+                <li>{t.collectMixedSample}</li>
+                <li>{t.allowToDry}</li>
               </ol>
             </div>
 
             <div className="guide-item">
-              <h4>What is Tested?</h4>
+              <h4>{t.whatIsTested}</h4>
               <ul>
-                <li><strong>NPK:</strong> Nitrogen, Phosphorus, Potassium levels</li>
-                <li><strong>pH:</strong> Soil acidity/alkalinity</li>
-                <li><strong>Organic Matter:</strong> Soil fertility status</li>
-                <li><strong>Micronutrients:</strong> Zinc, Iron, Manganese, etc.</li>
-                <li><strong>Texture:</strong> Sand, silt, clay composition</li>
+                <li><strong>NPK:</strong> {t.nitrogenPhosphorusLevels}</li>
+                <li><strong>pH:</strong> {t.soilAcidityPH}</li>
+                <li><strong>{t.organicMatter}:</strong> {t.soilFertilityStatus}</li>
+                <li><strong>{t.micronutrients}:</strong> Zinc, Iron, Manganese, etc.</li>
+                <li><strong>{t.texture}:</strong> {t.sandSiltComposition}</li>
               </ul>
             </div>
 
             <div className="guide-item">
-              <h4>Benefits of Soil Testing</h4>
+              <h4>{t.benefitsOfTesting}</h4>
               <ul>
-                <li>Precise fertilizer recommendations</li>
-                <li>Cost savings on fertilizers</li>
-                <li>Improved crop yield</li>
-                <li>Better soil health management</li>
-                <li>Prevent nutrient deficiencies</li>
+                <li>{t.preciseFertilizerRecs}</li>
+                <li>{t.costSavingsFertilizers}</li>
+                <li>{t.improvedCropYield}</li>
+                <li>{t.betterSoilHealth}</li>
+                <li>{t.preventNutrientDeficiencies}</li>
               </ul>
             </div>
 
             <div className="guide-item">
-              <h4>Frequency of Testing</h4>
+              <h4>{t.frequencyOfTesting}</h4>
               <ul>
-                <li><strong>New farms:</strong> Every 2 years initially</li>
-                <li><strong>Established farms:</strong> Every 3 years</li>
-                <li><strong>Problem areas:</strong> Annually</li>
-                <li><strong>Organic farms:</strong> Every 2 years</li>
+                <li><strong>{t.newFarms}:</strong> {t.every2YearsInitially}</li>
+                <li><strong>{t.establishedFarms}:</strong> {t.every3Years}</li>
+                <li><strong>{t.problemAreas}:</strong> {t.annually}</li>
+                <li><strong>{t.organicFarms}:</strong> {t.every2Years}</li>
               </ul>
             </div>
           </div>
