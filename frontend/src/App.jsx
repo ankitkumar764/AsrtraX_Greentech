@@ -6,6 +6,7 @@ import QuestionnaireAdvisor from './pages/QuestionnaireAdvisor';
 import SoilTestingLabs from './pages/SoilTestingLabs';
 import GovernmentSchemes from './pages/GovernmentSchemes';
 import VoiceAssistant from './pages/VoiceAssistant';
+import ProfitAnalysis from './pages/ProfitAnalysis';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import translations from './locales/translations';
 import './styles/App.css';
@@ -68,6 +69,11 @@ function AppContent() {
                 </Link>
               </li>
               <li>
+                <Link to="/profit-analysis" onClick={() => setActiveNav('profit')} className={activeNav === 'profit' ? 'active' : ''}>
+                  📈 Profit Analysis
+                </Link>
+              </li>
+              <li>
                 <Link to="/voice-assistant" onClick={() => setActiveNav('voice')} className={activeNav === 'voice' ? 'active' : ''}>
                   🎤 Voice Assistant
                 </Link>
@@ -84,6 +90,7 @@ function AppContent() {
             <Route path="/soil-labs" element={<SoilTestingLabs />} />
             <Route path="/schemes" element={<GovernmentSchemes />} />
             <Route path="/voice-assistant" element={<VoiceAssistant />} />
+            <Route path="/profit-analysis" element={<ProfitAnalysis />} />
           </Routes>
         </main>
 
