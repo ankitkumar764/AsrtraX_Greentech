@@ -30,6 +30,7 @@ const buildFallbackResponse = (transcript) => {
 router.post('/', async (req, res) => {
   try {
     const { transcript } = req.body;
+    console.log("Transcript received:", transcript);
 
     if (!transcript) {
       return res.status(400).json({ error: 'Transcript is required' });
@@ -44,45 +45,37 @@ router.post('/', async (req, res) => {
 
     // Call the Gemini model
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: transcript,
+      model: 'gemini-1.5-flash',
+      systemInstruction: SYSTEM_INSTRUCTION,
+      contents: [{ parts: [{ text: transcript }] }],
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
         temperature: 0.3,
       }
     });
 
+    const textResponse = response?.text
+      || (response?.output?.[0]?.items ? response.output[0].items.map(i => i.text).join('') : '')
+      || '';
+
+    if (!textResponse) {
+      return res.status(500).json({
+        success: false,
+        response: '',
+        error: 'AI returned empty text response'
+      });
+    }
+
     return res.status(200).json({
       success: true,
       response: response.text,
-      source: 'gemini',
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    const message = String(error?.message || '');
-    const quotaExceeded =
-      message.includes('RESOURCE_EXHAUSTED') ||
-      message.includes('Quota exceeded') ||
-      message.includes('rate-limits');
-
-    const fallbackResponse = buildFallbackResponse(req.body?.transcript);
-
-    // Graceful degrade: still return a usable response to keep assistant functional.
-    if (quotaExceeded) {
-      return res.status(200).json({
-        success: true,
-        response: fallbackResponse,
-        source: 'fallback',
-        warning: 'Gemini quota exceeded. Using fallback response.'
-      });
-    }
-
-    console.error('Error generating AI response:', message);
-    return res.status(502).json({
-      success: false,
+    console.error('Error generating AI response:', error);
+    return res.status(500).json({
       error: 'Failed to generate response',
-      message: message || 'Unknown AI provider error'
+      message: error.message
     });
   }
 });
