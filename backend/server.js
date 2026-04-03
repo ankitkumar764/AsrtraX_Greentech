@@ -11,15 +11,17 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Routes
+// Routes - Trigger nodemon restart 2
 const recommendationRoute = require('./routes/recommendations');
 const soilLabsRoute = require('./routes/soilLabs');
 const schemesRoute = require('./routes/schemes');
+const voiceAssistantRoute = require('./routes/voiceAssistant');
 
 // Use routes
 app.use('/api/recommendations', recommendationRoute);
 app.use('/api/soil-labs', soilLabsRoute);
 app.use('/api/schemes', schemesRoute);
+app.use('/api/voice-assistant', voiceAssistantRoute);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
