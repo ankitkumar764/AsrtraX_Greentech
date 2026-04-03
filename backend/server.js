@@ -24,6 +24,7 @@ app.use('/api/recommendations', recommendationRoute);
 app.use('/api/soil-labs', soilLabsRoute);
 app.use('/api/schemes', schemesRoute);
 app.use('/api/voice-assistant', voiceAssistantRoute);
+app.use('/api/ai', voiceAssistantRoute); // Alias for voice-assistant as requested
 app.use('/api/profit-analysis', profitAnalysisRoute);
 
 // Health check endpoint

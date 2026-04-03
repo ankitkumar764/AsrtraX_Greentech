@@ -1,32 +1,38 @@
 const express = require('express');
-const { GoogleGenAI } = require('@google/genai');
+const grokService = require('../services/grokService');
 
 const router = express.Router();
 
-let ai;
+let grokReady = false;
 try {
-  if (process.env.GEMINI_API_KEY) {
-    ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  if (process.env.GROK_API_KEY) {
+    grokReady = true;
+  } else {
+    console.log('GROK_API_KEY is not set in .env');
   }
 } catch (error) {
-  console.log('Could not initialize Google GenAI. Please ensure GEMINI_API_KEY is set in .env');
+  console.log('Error checking GROK_API_KEY', error);
 }
 
 // System prompt for the Agriculture Assistant
-const SYSTEM_INSTRUCTION = `You are an AI-powered agriculture assistant designed for Indian farmers. 
-CRITICAL RULE: You must detect the language of the user's input and reply in exactly the SAME language (e.g., if asked in English, reply in English; if asked in Hindi or Hinglish, reply in Hindi/Hinglish; if asked in Gujarati, reply in Gujarati).
-Always use very simple language. Avoid technical jargon. Keep answers short and clear (under 100 words). Be practical, not theoretical. Start with a direct answer, then give 2-4 bullet suggestions.`;
+const SYSTEM_INSTRUCTION = `You are an AI agriculture assistant for Indian farmers.
+Explain in simple Hinglish. Optionally use English if the user asks in English.
+Give practical advice.
+Suggest crops and fertilizers.
+Avoid technical language.
+Keep answers short and practical (under 100 words).
+CRITICAL: At the very end of your response, output a new line with exactly: "Confidence Level: [High/Medium/Low] - [Short reason]".`;
 
 const buildFallbackResponse = (transcript) => {
   const lower = String(transcript || '').toLowerCase();
   if (lower.includes('yellow') || lower.includes('पीला') || lower.includes('पीली')) {
-    return 'Patton ka peela hona zyadatar nitrogen ki kami ya pani management issue se hota hai.\n- 2% urea spray sham ko karein.\n- Khet me pani jama na hone dein.\n- Keede/rog check karein, zarurat ho to local KVK se sample dikhayein.';
+    return 'Patton ka peela hona zyadatar nitrogen ki kami ya pani management issue se hota hai.\n- 2% urea spray sham ko karein.\n- Khet me pani jama na hone dein.\n- Keede/rog check karein, zarurat ho to local KVK se sample dikhayein.\n\nConfidence Level: High - Common symptom match.';
   }
 
-  return 'Filhal AI service busy hai, lekin turant yeh karein:\n- Fasal ke pattay, mitti nami aur keede ka visual check karein.\n- Crop stage ke hisaab se halka NPK top-dressing karein.\n- 24 ghante me symptom badhe to najdiki krishi vibhag/KVK se salah lein.';
+  return 'Filhal AI service busy hai, lekin turant yeh karein:\n- Fasal ke pattay, mitti nami aur keede ka visual check karein.\n- Crop stage ke hisaab se halka NPK top-dressing karein.\n- 24 ghante me symptom badhe to najdiki krishi vibhag/KVK se salah lein.\n\nConfidence Level: Medium - Generalized advice due to fallback.';
 };
 
-// POST /api/voice-assistant
+// POST /api/voice-assistant -> This acts as /api/ai for voice
 router.post('/', async (req, res) => {
   try {
     const { transcript } = req.body;
@@ -36,26 +42,16 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Transcript is required' });
     }
 
-    if (!ai) {
+    if (!grokReady) {
       return res.status(503).json({
         success: false,
-        error: 'AI Service is not configured. Missing API Key.'
+        error: 'AI Service is not configured. Missing GROK_API_KEY.'
       });
     }
 
-    // Call the Gemini model
-    const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
-      systemInstruction: SYSTEM_INSTRUCTION,
-      contents: [{ parts: [{ text: transcript }] }],
-      config: {
-        temperature: 0.3,
-      }
-    });
-
-    const textResponse = response?.text
-      || (response?.output?.[0]?.items ? response.output[0].items.map(i => i.text).join('') : '')
-      || '';
+    // Call the Grok model
+    const messages = [{ role: 'user', content: transcript }];
+    const textResponse = await grokService.generateResponse(SYSTEM_INSTRUCTION, messages);
 
     if (!textResponse) {
       return res.status(500).json({
@@ -67,15 +63,20 @@ router.post('/', async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      response: response.text,
+      response: textResponse,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('Error generating AI response:', error);
-    return res.status(500).json({
-      error: 'Failed to generate response',
-      message: error.message
+    console.error('Error generating AI response:', error.message);
+    
+    // Instead of throwing 500 and breaking the UI, provide the fallback advisory
+    const fallbackMessage = buildFallbackResponse(req.body.transcript);
+    return res.status(200).json({
+      success: true,
+      response: fallbackMessage,
+      timestamp: new Date().toISOString(),
+      isFallback: true
     });
   }
 });

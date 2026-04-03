@@ -1,18 +1,16 @@
 require('dotenv').config();
-const { GoogleGenAI } = require('@google/genai');
+const grokService = require('./services/grokService');
 
 async function test() {
   try {
-    console.log("Key length:", process.env.GEMINI_API_KEY?.length);
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    console.log("Key length:", process.env.GROK_API_KEY?.length);
     console.log("Client initialized");
     
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: 'Hi'
-    });
+    const messages = [{ role: 'user', content: 'Say hi.' }];
+    const response = await grokService.generateResponse('You are a helpful assistant.', messages);
+    
     console.log("Response success:", !!response);
-    console.log("Response text:", response.text);
+    console.log("Response text:", response);
   } catch (err) {
     console.error("TEST FAILED:", err.message);
     console.error("FULL ERROR:", err);
@@ -20,3 +18,4 @@ async function test() {
 }
 
 test();
+
