@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
+import { 
+  TestTube, ArrowUpRight, ArrowDownRight, Leaf, 
+  CircleDollarSign, IndianRupee, PackageOpen, 
+  Clock, Lightbulb, CheckCircle, Sprout 
+} from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import translations from '../locales/translations';
 import api from '../services/api';
@@ -227,14 +234,21 @@ function SoilReportAdvisor() {
           </div>
 
           <div className="results-section">
-            {error && (
-              <div className="alert alert-error">
-                <strong>{t.error}:</strong> {error}
-              </div>
-            )}
+            <AnimatePresence mode="wait">
+              {error && (
+                <div className="alert alert-error">
+                  <strong>{t.error}:</strong> {error}
+                </div>
+              )}
 
-            {results && (
-              <div className="results">
+              {results && (
+                <motion.div 
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="show"
+                  exit="hidden"
+                  className="results"
+                >
                 <h2>📋 {t.recommendationsFor} {results.crop}</h2>
 
                   <motion.div variants={itemVariants} className="soil-analysis modern-card">
