@@ -4,7 +4,7 @@ const recommendationEngine = require('../services/recommendationEngine');
 const router = express.Router();
 
 // POST /api/recommendations/get
-router.post('/get', (req, res) => {
+router.post('/get', async (req, res) => {
   try {
     const inputs = req.body;
 
@@ -18,7 +18,7 @@ router.post('/get', (req, res) => {
     }
 
     // Generate recommendations
-    const recommendations = recommendationEngine.generateRecommendations(inputs);
+    const recommendations = await recommendationEngine.generateRecommendations(inputs);
 
     return res.json({
       success: true,
@@ -35,9 +35,10 @@ router.post('/get', (req, res) => {
 });
 
 // POST /api/recommendations/soil-report
-router.post('/soil-report', (req, res) => {
+router.post('/soil-report', async (req, res) => {
   try {
-    const { soilN, soilP, soilK, pH, season, crop, budget } = req.body;
+    const inputs = req.body;
+    const { soilN, soilP, soilK, pH } = inputs;
 
     if (!soilN || !soilP || !soilK || !pH) {
       return res.status(400).json({
@@ -46,27 +47,30 @@ router.post('/soil-report', (req, res) => {
       });
     }
 
-    if (!crop) {
+    // Use the recommendation engine to generate top crops based on inputs
+    // isSoilReport flag set to true
+    const recommendations = await recommendationEngine.generateRecommendations(inputs, true);
+    
+    if (!recommendations.success || !recommendations.recommendations || recommendations.recommendations.length === 0) {
       return res.status(400).json({
-        error: 'Crop name is required'
+        error: recommendations.message || 'Could not find suitable crops for your conditions'
       });
     }
 
-    // Calculate NPK requirements
-    const npk = recommendationEngine.calculateNPK(crop, soilN, soilP, soilK, pH);
-    const fertilizer = recommendationEngine.recommendFertilizers(crop, npk, budget);
-
     return res.json({
       success: true,
-      crop,
       soilAnalysis: {
         nitrogen: soilN,
         phosphorus: soilP,
         potassium: soilK,
         pH: pH
       },
-      npkRequirements: npk,
-      fertilizerPlan: fertilizer,
+      recommendations: recommendations.recommendations, // top crops array
+      landArea: recommendations.landArea,
+      soilHealth: recommendations.soilHealth,
+      confidenceLevel: recommendations.confidenceLevel,
+      warning: recommendations.warning,
+      generalAdvice: recommendations.generalAdvice,
       timestamp: new Date().toISOString()
     });
   } catch (error) {

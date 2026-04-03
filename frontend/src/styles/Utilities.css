@@ -240,27 +240,70 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .labs-grid,
+  .schemes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .guide-grid,
+  .schemes-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .button-group {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
   }
 
   .state-btn,
   .filter-btn {
-    width: 100%;
+    flex: 1 1 calc(50% - 10px);
+    text-align: center;
+    padding: 12px 10px;
   }
 
   .labs-grid,
   .schemes-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .guide-grid,
   .schemes-info {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 
   .action-section {
-    padding: 30px 20px;
+    padding: 30px 15px;
+    margin-top: 30px;
+  }
+
+  .action-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .lab-card,
+  .scheme-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .state-btn,
+  .filter-btn {
+    flex: 1 1 100%;
+  }
+
+  .utility-page {
+    padding: 10px;
+  }
+
+  .state-selector,
+  .filter-section {
+    padding: 20px 15px;
   }
 }

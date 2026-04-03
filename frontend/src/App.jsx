@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { 
+  CircleDollarSign, Lightbulb, CheckCircle, Sprout,
+  MapPin, Phone, Building2, Landmark, ShieldCheck, Sparkles, AlertTriangle, TrendingUp,
+  Globe, ChevronDown, Menu, X, 
+  Leaf, FlaskConical, ScrollText, LineChart, Mic, Home as HomeIcon
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
 import SoilReportAdvisor from './pages/SoilReportAdvisor';
 import QuestionnaireAdvisor from './pages/QuestionnaireAdvisor';
@@ -12,104 +19,170 @@ import translations from './locales/translations';
 import './styles/App.css';
 
 function AppContent() {
-  const [activeNav, setActiveNav] = useState('home');
   const { language, changeLanguage } = useLanguage();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
   const t = translations[language] || translations['en'];
+  const location = useLocation();
+
+  // Close menus on click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isLangOpen && !event.target.closest('.lang-selector-premium')) {
+        setIsLangOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isLangOpen]);
+
+  // Close menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  // Helper component to sync active nav with URL
+  const NavLink = ({ to, icon: Icon, children }) => {
+    const isActive = location.pathname === to;
+    
+    return (
+      <li className={isActive ? 'active' : ''}>
+        <Link to={to} onClick={() => setIsMenuOpen(false)}>
+          {Icon && <Icon size={18} className="nav-icon" />}
+          <span>{children}</span>
+        </Link>
+      </li>
+    );
+  };
 
   return (
-    <Router>
-      <div className="app">
-        <header className="header">
-          <div className="container">
-            <div className="logo-section">
-              <h1 className="logo">🌾 {t.appTitle}</h1>
-              <p className="tagline">{t.tagline}</p>
-            </div>
-            <div className="language-selector">
-              <select 
-                className="lang-dropdown"
-                value={language}
-                onChange={(e) => changeLanguage(e.target.value)}
-                title={t.language}
+    <div className={`app ${isMenuOpen ? 'menu-open' : ''}`}>
+      <header className="header-premium">
+        <div className="container header-container">
+          <div className="logo-section-premium" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '20px', textDecoration: 'none' }}>
+              <div className="logo-glass">
+                <Sprout size={32} className="logo-icon-spark" />
+                <div className="logo-glow"></div>
+              </div>
+              <div className="brand-info">
+                <h1 className="brand-name">
+                  <span className="weight-900">Krishi</span>
+                  <span className="weight-300">Saarthi</span>
+                </h1>
+                <p className="brand-tagline">
+                  <Sparkles size={12} /> {t.tagline}
+                </p>
+              </div>
+            </Link>
+          </div>
+
+          <div className="header-actions">
+            <div className="lang-selector-premium">
+              <button 
+                className={`lang-trigger-premium ${isLangOpen ? 'open' : ''}`}
+                onClick={() => setIsLangOpen(!isLangOpen)}
               >
-                <option value="en">🇬🇧 English</option>
-                <option value="hi">🇮🇳 हिंदी</option>
-                <option value="gu">🇮🇳 ગુજરાતી</option>
-              </select>
+                <Globe size={18} className="globe-icon-static" />
+                <span>{language === 'en' ? 'English' : (language === 'hi' ? 'हिंदी' : 'ગુજરાતી')}</span>
+                <ChevronDown size={14} className={`chevron-icon ${isLangOpen ? 'rotate' : ''}`} />
+              </button>
+
+              <AnimatePresence>
+                {isLangOpen && (
+                  <motion.div 
+                    className="lang-dropdown-menu"
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    <button 
+                      className={`lang-option ${language === 'en' ? 'active' : ''}`}
+                      onClick={() => { changeLanguage('en'); setIsLangOpen(false); }}
+                    >
+                      <span className="lang-text">English</span>
+                      {language === 'en' && <div className="active-dot" />}
+                    </button>
+                    <button 
+                      className={`lang-option ${language === 'hi' ? 'active' : ''}`}
+                      onClick={() => { changeLanguage('hi'); setIsLangOpen(false); }}
+                    >
+                      <span className="lang-text">हिंदी</span>
+                      {language === 'hi' && <div className="active-dot" />}
+                    </button>
+                    <button 
+                      className={`lang-option ${language === 'gu' ? 'active' : ''}`}
+                      onClick={() => { changeLanguage('gu'); setIsLangOpen(false); }}
+                    >
+                      <span className="lang-text">ગુજરાતી</span>
+                      {language === 'gu' && <div className="active-dot" />}
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            
+            <button className="mobile-menu-toggle" onClick={toggleMenu} aria-label="Toggle Menu">
+              {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <nav className={`navbar-premium ${isMenuOpen ? 'show' : ''}`}>
+        <div className="container">
+          <ul className="nav-menu-premium">
+            <NavLink to="/" icon={HomeIcon}>{t.navHome}</NavLink>
+            <NavLink to="/soil-report" icon={FlaskConical}>{t.navSoilReport}</NavLink>
+            <NavLink to="/questionnaire" icon={ScrollText}>{t.navQuestionnaire}</NavLink>
+            <NavLink to="/soil-labs" icon={MapPin}>{t.navSoilLabs}</NavLink>
+            <NavLink to="/schemes" icon={Landmark}>{t.navSchemes}</NavLink>
+            <NavLink to="/profit-analysis" icon={LineChart}>Profit Analysis</NavLink>
+            <NavLink to="/voice-assistant" icon={Mic}>Voice Assistant</NavLink>
+          </ul>
+        </div>
+      </nav>
+
+      <main className="main-content-premium">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/soil-report" element={<SoilReportAdvisor />} />
+          <Route path="/questionnaire" element={<QuestionnaireAdvisor />} />
+          <Route path="/soil-labs" element={<SoilTestingLabs />} />
+          <Route path="/schemes" element={<GovernmentSchemes />} />
+          <Route path="/voice-assistant" element={<VoiceAssistant />} />
+          <Route path="/profit-analysis" element={<ProfitAnalysis />} />
+        </Routes>
+      </main>
+
+      <footer className="footer-premium">
+        <div className="container">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <h3>KrishiSaarthi AI</h3>
+              <p>{t.tagline}</p>
+            </div>
+            <div className="footer-copyright">
+              <p>{t.footerCopyright}</p>
+              <p className="footer-contact">{t.footerContact}</p>
             </div>
           </div>
-        </header>
-
-        <nav className="navbar">
-          <div className="container">
-            <ul className="nav-menu">
-              <li>
-                <Link to="/" onClick={() => setActiveNav('home')} className={activeNav === 'home' ? 'active' : ''}>
-                  {t.navHome}
-                </Link>
-              </li>
-              <li>
-                <Link to="/soil-report" onClick={() => setActiveNav('soil')} className={activeNav === 'soil' ? 'active' : ''}>
-                  {t.navSoilReport}
-                </Link>
-              </li>
-              <li>
-                <Link to="/questionnaire" onClick={() => setActiveNav('quest')} className={activeNav === 'quest' ? 'active' : ''}>
-                  {t.navQuestionnaire}
-                </Link>
-              </li>
-              <li>
-                <Link to="/soil-labs" onClick={() => setActiveNav('labs')} className={activeNav === 'labs' ? 'active' : ''}>
-                  {t.navSoilLabs}
-                </Link>
-              </li>
-              <li>
-                <Link to="/schemes" onClick={() => setActiveNav('schemes')} className={activeNav === 'schemes' ? 'active' : ''}>
-                  {t.navSchemes}
-                </Link>
-              </li>
-              <li>
-                <Link to="/profit-analysis" onClick={() => setActiveNav('profit')} className={activeNav === 'profit' ? 'active' : ''}>
-                  📈 Profit Analysis
-                </Link>
-              </li>
-              <li>
-                <Link to="/voice-assistant" onClick={() => setActiveNav('voice')} className={activeNav === 'voice' ? 'active' : ''}>
-                  🎤 Voice Assistant
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
-
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/soil-report" element={<SoilReportAdvisor />} />
-            <Route path="/questionnaire" element={<QuestionnaireAdvisor />} />
-            <Route path="/soil-labs" element={<SoilTestingLabs />} />
-            <Route path="/schemes" element={<GovernmentSchemes />} />
-            <Route path="/voice-assistant" element={<VoiceAssistant />} />
-            <Route path="/profit-analysis" element={<ProfitAnalysis />} />
-          </Routes>
-        </main>
-
-        <footer className="footer">
-          <div className="container">
-            <p>{t.footerCopyright}</p>
-            <p>{t.footerContact}</p>
-          </div>
-        </footer>
-      </div>
-    </Router>
+        </div>
+      </footer>
+    </div>
   );
 }
 
 function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <Router>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </Router>
   );
 }
 

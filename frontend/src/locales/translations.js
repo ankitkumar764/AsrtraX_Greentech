@@ -299,7 +299,37 @@ const translations = {
     generalAdviceLabel: "General Advice",
     selectStateDefault: "Select state",
     answerQuestionsPlaceholder: "Answer the questions to receive personalized crop and fertilizer recommendations",
+    modifyInputs: "Modify Parameters",
 
+    // New Keys for Dynamic Results
+    SOIL_HEALTH_GOOD: "Good",
+    SOIL_HEALTH_MEDIUM: "Fair",
+    SOIL_HEALTH_POOR: "Poor",
+    SOIL_HEALTH_GOOD_NOTES: "Excellent! Your soil has optimal nutrient balance and pH levels.",
+    SOIL_HEALTH_MEDIUM_NOTES: "Safe. Nutrient levels are within an acceptable range for core crops.",
+    SOIL_HEALTH_POOR_NOTES: "Action Required. Critical nutrient imbalances or extreme pH detected.",
+    SOIL_HEALTH_IMBALANCED_NOTES: "Minor nutrient imbalances detected. Targeted fertilization will help.",
+    
+    CONFIDENCE_HIGH: "High",
+    CONFIDENCE_PRECISION: "High (based on precise soil lab test)",
+    CONFIDENCE_APPROXIMATE: "Medium (based on approximate inputs)",
+    CONFIDENCE_LOW: "Low (missing critical soil details)",
+    
+    WARNING_EXCESSIVE_USAGE: "CRITICAL: History of excessive fertilizer use detected. This damages soil long-term and reduces yield. Use organic manure and follow exact dosage.",
+    
+    // Crop Names
+    cropBajra: "🌾 Bajra (Pearl Millet)",
+    
+    // Reasoning Keys
+    REASONING_BAJRA_SANDY: "Perfectly suited for sandy soil and low water availability. Bajra is highly resilient.",
+    REASONING_BAJRA_GENERAL: "Suitable for warm climates and low-water conditions.",
+    REASONING_WHEAT_LOAMY: "Optimal for loamy soil with proper irrigation.",
+    REASONING_RICE_CLAY: "Excellent for clay soil which retains water well.",
+    
+    // Optimization
+    OPTIMIZE_BAJRA: "Reduce Nitrogen by 10% if using organic compost.",
+    OPTIMIZE_WHEAT: "Apply Phosphorus during first watering for better root growth.",
+    
     // Footer
     footerCopyright: "© 2024 KrishiSaarthi AI - Empowering Farmers with Smart Solutions",
     footerContact: "For more information, contact your local agricultural officer",
@@ -607,6 +637,38 @@ const translations = {
     generalAdviceLabel: "सामान्य सलाह",
     selectStateDefault: "राज्य चुनें",
     answerQuestionsPlaceholder: "व्यक्तिगत फसल और उर्वरक सिफारिशें प्राप्त करने के लिए प्रश्नों के उत्तर दें",
+    modifyInputs: "सेटिंग्स बदलें / पीछे जाएँ",
+
+    // नए डायनामिक टेक्स्ट (New Keys for Dynamic Results)
+    SOIL_HEALTH_GOOD: "अच्छा",
+    SOIL_HEALTH_MEDIUM: "सामान्य",
+    SOIL_HEALTH_POOR: "खराब",
+    SOIL_HEALTH_GOOD_NOTES: "शानदार! आपकी मिट्टी में पोषक तत्वों का संतुलन और pH स्तर बहुत अच्छा है।",
+    SOIL_HEALTH_MEDIUM_NOTES: "सुरक्षित। पोषक तत्वों का स्तर मुख्य फसलों के लिए संतोषजनक है।",
+    SOIL_HEALTH_POOR_NOTES: "सावधानी। मिट्टी में पोषक तत्वों की भारी कमी या असामान्य pH स्तर पाया गया है।",
+    SOIL_HEALTH_IMBALANCED_NOTES: "मिट्टी में पोषक तत्वों का मामूली असंतुलन है। सही उर्वरक से सुधार संभव है।",
+
+    CONFIDENCE_HIGH: "उच्च",
+    CONFIDENCE_PRECISION: "उच्च (सटीक लैब रिपोर्ट पर आधारित)",
+    CONFIDENCE_APPROXIMATE: "मध्यम (अनुमानित जानकारी पर आधारित)",
+    CONFIDENCE_LOW: "कम (मिट्टी की जानकारी अधूरी है)",
+
+    WARNING_EXCESSIVE_USAGE: "चेतावनी: उर्वरकों का अत्यधिक उपयोग पाया गया है। यह लंबे समय में मिट्टी को नुकसान पहुंचाता है। कृपया जैविक खाद का उपयोग बढ़ाएं।",
+
+    // फसल के नाम
+    cropBajra: "🌾 बाजरा",
+
+    // तर्क (Reasoning Keys)
+    REASONING_BAJRA_SANDY: "बलुई मिट्टी और कम पानी के लिए सर्वोत्तम। बाजरा बहुत मजबूत फसल है।",
+    REASONING_BAJRA_GENERAL: "गर्म जलवायु और कम पानी वाले क्षेत्रों के लिए उपयुक्त।",
+    REASONING_WHEAT_LOAMY: "दोमट मिट्टी और उचित सिंचाई के साथ सबसे अच्छा उत्पादन देता है।",
+    REASONING_RICE_CLAY: "चिकनी मिट्टी के लिए उत्तम जो पानी को अच्छे से सोखती है।",
+
+    // अनुकूलन (Optimization)
+    OPTIMIZE_BAJRA: "जैविक खाद का उपयोग करने पर नाइट्रोजन में 10% की कटौती करें।",
+    OPTIMIZE_WHEAT: "जड़ों के अच्छे विकास के लिए पहली सिंचाई के दौरान फॉस्फोरस डालें।",
+
+    // Footer
   },
   gu: {
     // Header & Navigation
@@ -928,7 +990,39 @@ const translations = {
     estimatedYieldLabel: "અનુમાનિત ઉપજ",
     generalAdviceLabel: "સામાન્ય સલાહ",
     selectStateDefault: "રાજ્ય પસંદ કરો",
-    answerQuestionsPlaceholder: "વ્યક્તિગતકૃત પાક અને ખાતર ભલામણો મેળવવા માટે પ્રશ્નોના જવાબ આપો"
+    answerQuestionsPlaceholder: "વ્યક્તિગતકૃત પાક અને ખાતર ભલામણો મેળવવા માટે પ્રશ્નોના જવાબ આપો",
+    modifyInputs: "ફેરફાર કરો / પાછા જાઓ",
+
+    // નવા ડાયનામિક ટેક્સ્ટ (New Keys for Dynamic Results)
+    SOIL_HEALTH_GOOD: "સારું",
+    SOIL_HEALTH_MEDIUM: "સામાન્ય",
+    SOIL_HEALTH_POOR: "ખરાબ",
+    SOIL_HEALTH_GOOD_NOTES: "ઉત્તમ! તમારી માટીમાં પોષક તત્વોનું સંતુલન અને pH સ્તર શ્રેષ્ઠ છે.",
+    SOIL_HEALTH_MEDIUM_NOTES: "સુરક્ષિત. પોષક તત્વોનું સ્તર મુખ્ય પાકો માટે સંતોષકારક છે.",
+    SOIL_HEALTH_POOR_NOTES: "સાવધ. માટીમાં પોષક તત્વોની ભારે અછત અથવા અસામાન્ય pH સ્તર જોવા મળ્યું છે.",
+    SOIL_HEALTH_IMBALANCED_NOTES: "માટીમાં પોષક તત્વોનું સામાન્ય અસંતુલન છે. યોગ્ય ખાતરથી સુધાર લાવી શકાય છે.",
+
+    CONFIDENCE_HIGH: "ઉચ્ચ",
+    CONFIDENCE_PRECISION: "ઉચ્ચ (સચોટ લેબ રિપોર્ટ પર આધારિત)",
+    CONFIDENCE_APPROXIMATE: "મધ્યમ (અંદાજિત માહિતી પર આધારિત)",
+    CONFIDENCE_LOW: "ઓછું (માટીની માહિતી અધૂરી છે)",
+
+    WARNING_EXCESSIVE_USAGE: "ચેતવણી: ખાતરનો અતિશય ઉપયોગ જોવા મળ્યો છે. આ લાંબા ગાળે જમીનને નુકસાન કરે છે. કૃપા કરીને જૈવિક ખાતરનો ઉપયોગ વધારો.",
+
+    // પાકના નામ
+    cropBajra: "🌾 બાજરી",
+
+    // કારણો (Reasoning Keys)
+    REASONING_BAJRA_SANDY: "રેતાળ જમીન અને ઓછા પાણી માટે શ્રેષ્ઠ. બાજરી ખૂબ જ મજબૂત પાક છે.",
+    REASONING_BAJRA_GENERAL: "ગરમ આબોહવા અને ઓછા પાણીવાળા વિસ્તારો માટે યોગ્ય.",
+    REASONING_WHEAT_LOAMY: "ગોરાડુ જમીન અને યોગ્ય પિયત સાથે શ્રેષ્ઠ ઉત્પાદન આપે છે.",
+    REASONING_RICE_CLAY: "ચીકણી જમીન માટે ઉત્તમ જે પાણીને સારી રીતે પકડી રાખે છે.",
+
+    // ઓપ્ટિમાઇઝેશન (Optimization)
+    OPTIMIZE_BAJRA: "જો જૈવિક ખાતર વાપરતા હોવ તો નાઇટ્રોજનમાં 10% ઘટાડો કરો.",
+    OPTIMIZE_WHEAT: "મૂળના સારા વિકાસ માટે પ્રથમ પિયત દરમિયાન ફોસ્ફરસ આપો.",
+
+    // Footer
   }
 };
 

@@ -1,4 +1,5 @@
-// Rule-based recommendation engine for crops and fertilizers
+// Rule-based and ML-powered recommendation engine for crops and fertilizers
+const axios = require('axios');
 
 class RecommendationEngine {
   constructor() {
@@ -110,6 +111,20 @@ class RecommendationEngine {
           costPerKg: 30,
           yieldPotential: { min: 8, max: 15 },
           baseCosts: { seed: 5000, labor: 7000 }
+        },
+        bajra: {
+          soilType: ['sandy', 'loamy'],
+          season: ['kharif'],
+          phRange: { min: 6.5, max: 8.5 },
+          nFertilizer: { application: 40 },
+          pFertilizer: { application: 20 },
+          kFertilizer: { application: 20 },
+          waterNeeds: 'low',
+          minRainfall: 30,
+          climate: ['tropical', 'arid'],
+          costPerKg: 20,
+          yieldPotential: { min: 1, max: 2 },
+          baseCosts: { seed: 500, labor: 1500 }
         }
       };
     }
@@ -209,16 +224,22 @@ class RecommendationEngine {
       const deficitN = npk.nitrogen.deficit;
       const deficitP = npk.phosphorus.deficit;
       const deficitK = npk.potassium.deficit;
+      
+      // Calculate bags per hectare first, then convert representation to kg/acre (1 ha = 2.471 acres)
+      // Usually, 1 bag = 50 kg
+      const haToAcre = 2.471;
   
       // First priority: DAP (provides P and some N)
       const dapBagsPerHa = Math.ceil(deficitP / (this.fertilizers.dap.pContent * 50 / 100));
       const finalDapBags = Math.ceil(dapBagsPerHa * landArea);
       const dapCost = finalDapBags * this.fertilizers.dap.costPerBag;
+      const dapKgPerAcre = ((dapBagsPerHa * 50) / haToAcre).toFixed(1);
   
       if (finalDapBags > 0) {
         recommendations.push({
           name: 'DAP (Di-Ammonium Phosphate)',
           bags: finalDapBags,
+          perAcre: `${dapKgPerAcre} kg/acre`,
           timing: 'At the time of planting',
           cost: dapCost,
           reason: 'Provides phosphorus and nitrogen for root development'
@@ -230,11 +251,13 @@ class RecommendationEngine {
       const ureaBagsPerHa = Math.max(0, Math.ceil(remainingN / (this.fertilizers.urea.nContent * 50 / 100)));
       const finalUreaBags = Math.ceil(ureaBagsPerHa * landArea);
       const ureaCost = finalUreaBags * this.fertilizers.urea.costPerBag;
+      const ureaKgPerAcre = ((ureaBagsPerHa * 50) / haToAcre).toFixed(1);
   
       if (finalUreaBags > 0) {
         recommendations.push({
           name: 'Urea',
           bags: finalUreaBags,
+          perAcre: `${ureaKgPerAcre} kg/acre`,
           timing: 'Split application: Half at tillering, half at boot stage',
           cost: ureaCost,
           reason: 'Provides nitrogen for vegetative growth'
@@ -245,11 +268,13 @@ class RecommendationEngine {
       const mopBagsPerHa = Math.ceil(deficitK / (this.fertilizers.mop.kContent * 50 / 100));
       const finalMopBags = Math.ceil(mopBagsPerHa * landArea);
       const mopCost = finalMopBags * this.fertilizers.mop.costPerBag;
+      const mopKgPerAcre = ((mopBagsPerHa * 50) / haToAcre).toFixed(1);
   
       if (finalMopBags > 0) {
         recommendations.push({
           name: 'MOP (Muriate of Potash)',
           bags: finalMopBags,
+          perAcre: `${mopKgPerAcre} kg/acre`,
           timing: 'At flowering stage',
           cost: mopCost,
           reason: 'Strengthens plants and improves grain filling'
@@ -311,10 +336,57 @@ class RecommendationEngine {
     }
   
     // Generate recommendations based on questionnaire inputs
-    generateRecommendations(inputs) {
-      const cropRecommendations = this.recommendCrops(inputs);
+    async generateRecommendations(inputs, isSoilReport = false) {
+      let cropRecommendations = this.recommendCrops(inputs);
       const landArea = parseFloat(inputs.landArea) || 1;
   
+      // ML Integration: If it's a soil report, try to get scientific recommendation from Python ML service
+      let mlRecommendation = null;
+      if (isSoilReport) {
+        try {
+          const mlResponse = await axios.post('http://localhost:5000/predict', {
+            N: parseFloat(inputs.soilN) || 0,
+            P: parseFloat(inputs.soilP) || 0,
+            K: parseFloat(inputs.soilK) || 0,
+            temperature: parseFloat(inputs.temperature) || 25, // Default if not provided
+            humidity: parseFloat(inputs.humidity) || 60,
+            ph: parseFloat(inputs.pH) || 6.5,
+            rainfall: parseFloat(inputs.rainfall) || 100
+          });
+
+          if (mlResponse.data && mlResponse.data.recommended_crop) {
+            mlRecommendation = {
+              name: mlResponse.data.recommended_crop.toLowerCase(),
+              score: mlResponse.data.confidence,
+              isML: true
+            };
+            
+            // Add ML recommendation to the top if not already there, or boost its score
+            const existingIdx = cropRecommendations.findIndex(c => c.name === mlRecommendation.name);
+            if (existingIdx !== -1) {
+              cropRecommendations[existingIdx].score = mlRecommendation.score;
+              cropRecommendations[existingIdx].isML = true;
+              // Move to top
+              const [mlItem] = cropRecommendations.splice(existingIdx, 1);
+              cropRecommendations.unshift(mlItem);
+            } else {
+              // Add to database temporarily if missing
+              if (this.cropDatabase[mlRecommendation.name]) {
+                cropRecommendations.unshift({
+                  name: mlRecommendation.name,
+                  score: mlRecommendation.score,
+                  details: this.cropDatabase[mlRecommendation.name],
+                  isML: true
+                });
+              }
+            }
+          }
+        } catch (error) {
+          console.error('ML Service Error:', error.message);
+          // Fallback to rule-based only
+        }
+      }
+
       if (cropRecommendations.length === 0) {
         return {
           success: false,
@@ -322,37 +394,103 @@ class RecommendationEngine {
           crops: []
         };
       }
+
+      const soilN = parseFloat(inputs.soilN) || 50;
+      const soilP = parseFloat(inputs.soilP) || 10;
+      const soilK = parseFloat(inputs.soilK) || 30;
+      const soilPH = parseFloat(inputs.pH) || 6.5;
+  
+      // Calculate Overall Soil Health
+      const healthScore = (soilN + soilP + soilK) / 3;
+      let soilHealthStatus = 'SOIL_HEALTH_MEDIUM';
+      let healthNotes = 'SOIL_HEALTH_MEDIUM_NOTES';
+      
+      let deficiencies = [];
+      if (soilN < 80) deficiencies.push('N_LOW');
+      if (soilP < 20) deficiencies.push('P_LOW');
+      if (soilK < 40) deficiencies.push('K_LOW');
+      
+      let excesses = [];
+      if (soilN > 250) excesses.push('N_HIGH');
+      if (soilP > 100) excesses.push('P_HIGH');
+      if (soilK > 300) excesses.push('K_HIGH');
+
+      if (healthScore > 80 && soilPH >= 6.0 && soilPH <= 7.5 && deficiencies.length === 0) {
+        soilHealthStatus = 'SOIL_HEALTH_GOOD';
+        healthNotes = 'SOIL_HEALTH_GOOD_NOTES';
+      } else if (healthScore < 30 || soilPH < 5.5 || soilPH > 8.0 || deficiencies.length > 1) {
+        soilHealthStatus = 'SOIL_HEALTH_POOR';
+        healthNotes = 'SOIL_HEALTH_POOR_NOTES';
+      } else if (deficiencies.length > 0 || excesses.length > 0) {
+        healthNotes = 'SOIL_HEALTH_IMBALANCED_NOTES';
+      }
+
+      let confidenceLevelStr = 'CONFIDENCE_HIGH';
+      if (isSoilReport) {
+         confidenceLevelStr = 'CONFIDENCE_PRECISION';
+      } else if (inputs.soilType && inputs.soilType !== 'unknown') {
+         confidenceLevelStr = 'CONFIDENCE_APPROXIMATE';
+      } else {
+         confidenceLevelStr = 'CONFIDENCE_LOW';
+      }
   
       const detailedRecommendations = cropRecommendations.map(crop => {
         const npk = this.calculateNPK(
           crop.name,
-          inputs.soilN || 50,
-          inputs.soilP || 10,
-          inputs.soilK || 30,
-          inputs.pH || 6.5
+          soilN,
+          soilP,
+          soilK,
+          soilPH
         );
   
         const fertilizer = this.recommendFertilizers(crop.name, npk, inputs.budget, landArea);
         const financials = this.calculateFinancials(crop.name, fertilizer.totalCost, landArea);
   
+        // Calculate estimated savings from utilizing existing soil nutrients (compared to 0 nutrients baseline)
+        const standardNpk = this.calculateNPK(crop.name, 0, 0, 0, soilPH);
+        const standardFertilizer = this.recommendFertilizers(crop.name, standardNpk, undefined, landArea);
+        const savedFromSoil = Math.max(0, standardFertilizer.totalCost - fertilizer.totalCost);
+
+        // Calculate estimated savings (e.g. by using organic compost instead of pure chemical setup)
+        const organicSavingPercent = 0.15; // 15% saving assumption
+        const potentialSavings = Math.round(fertilizer.totalCost * organicSavingPercent);
+
         return {
           rank: cropRecommendations.indexOf(crop) + 1,
           cropName: this.attachEmoji(crop.name.charAt(0).toUpperCase() + crop.name.slice(1)),
           matchScore: crop.score,
           reasoning: this.generateCropReasoning(crop.name, inputs),
+          reasoningKey: `REASONING_${crop.name.toUpperCase()}_${inputs.soilType ? inputs.soilType.toUpperCase().replace(' ', '_') : 'GENERAL'}`,
           npkRequirements: npk,
           fertilizerPlan: fertilizer,
           financials: financials,
           landAreaUsed: landArea,
           estimatedYield: crop.details.yieldPotential,
-          costOptimization: this.suggestCostOptimizations(crop.name, fertilizer)
+          waterNeeds: crop.details.waterNeeds,
+          costOptimizationKey: `OPTIMIZE_${crop.name.toUpperCase()}`,
+          impact: {
+            costSavings: potentialSavings,
+            fertilizerSavings: Math.round(savedFromSoil),
+            expectedYieldImprovement: Math.round(crop.score > 80 ? 25 : 15), // 15-25% improvement
+          }
         };
       });
+
+      let warning = null;
+      if (inputs.fertilizationHistory === 'excessive') {
+        warning = 'WARNING_EXCESSIVE_USAGE';
+      }
   
       return {
         success: true,
         recommendations: detailedRecommendations,
         landArea: landArea,
+        soilHealth: {
+          status: soilHealthStatus,
+          notes: healthNotes
+        },
+        confidenceLevel: confidenceLevelStr,
+        warning: warning,
         generalAdvice: this.generateGeneralAdvice(inputs)
       };
     }
@@ -361,24 +499,34 @@ class RecommendationEngine {
       const reasons = [];
       const cropData = this.cropDatabase[crop.toLowerCase()];
   
-      if (cropData.season.includes(inputs.season?.toLowerCase())) {
-        reasons.push(`✓ Perfect season match for ${inputs.season}`);
-      }
-  
       if (cropData.soilType.includes(inputs.soilType?.toLowerCase())) {
-        reasons.push(`✓ Ideal for ${inputs.soilType} soil`);
+        reasons.push(`Soil Match: Ideal for ${inputs.soilType} soil due to optimal drainage.`);
+      } else if (inputs.soilType && inputs.soilType !== 'unknown') {
+        reasons.push(`Soil Match: Can grow in ${inputs.soilType} soil with proper management.`);
       }
   
-      if (inputs.waterAvailability === 'high' && cropData.waterNeeds === 'high') {
-        reasons.push(`✓ Well-suited for high water availability areas`);
+      if (inputs.waterAvailability) {
+        if (inputs.waterAvailability === 'high' && cropData.waterNeeds === 'high') {
+          reasons.push(`Water Match: Very well-suited for high water availability (needs ${cropData.waterNeeds} water).`);
+        } else if (inputs.waterAvailability === 'low' && cropData.waterNeeds === 'low') {
+          reasons.push(`Water Match: Excellent drought resistance, matches your low water availability.`);
+        } else if (inputs.waterAvailability === 'medium' || inputs.waterAvailability === 'moderate') {
+          reasons.push(`Water Match: Suitable for moderate water availability.`);
+        } else {
+             reasons.push(`Water Needs: Requires ${cropData.waterNeeds} water management.`);
+        }
       }
-  
-      if (inputs.previousCrop && inputs.previousCrop.toLowerCase() !== crop.toLowerCase()) {
+
+      if (inputs.previousCrop && inputs.previousCrop.toLowerCase() !== crop.toLowerCase() && inputs.previousCrop !== 'fallow') {
         const prevCropWithEmoji = this.attachEmoji(inputs.previousCrop.charAt(0).toUpperCase() + inputs.previousCrop.slice(1));
-        reasons.push(`✓ Good crop rotation after ${prevCropWithEmoji}`);
+        reasons.push(`Rotation Benefit: Good crop rotation after ${prevCropWithEmoji}, helps break pest cycles and restore nutrients.`);
+      }
+
+      if (cropData.season.includes(inputs.season?.toLowerCase())) {
+        reasons.push(`Season Match: Perfect season match for ${inputs.season}.`);
       }
   
-      return reasons.length > 0 ? reasons : ['Suitable crop for your region'];
+      return reasons.length > 0 ? reasons : ['Suitable robust crop for your specified general region.'];
     }
   
     generateGeneralAdvice(inputs) {
