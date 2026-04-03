@@ -104,41 +104,21 @@ class RecommendationEngine {
           nFertilizer: { application: 100 },
           pFertilizer: { application: 60 },
           kFertilizer: { application: 50 },
-          pContent: 46,
-          kContent: 0,
-          costPerBag: 1100, // 50kg bag
-          applicationType: 'basal',
-          timing: ['planting'],
-          soilPhSuitability: 'acidic to neutral'
-        },
-        mop: {
-          nContent: 0,
-          pContent: 0,
-          kContent: 60,
-          costPerBag: 600, // 50kg bag
-          applicationType: 'split',
-          timing: ['flowering', 'fruiting'],
-          soilPhSuitability: 'all'
-        },
-        neem: {
-          nContent: 3,
-          pContent: 1,
-          kContent: 1,
-          costPerBag: 400, // 50kg bag
-          applicationType: 'soil',
-          timing: ['pre-planting'],
-          soilPhSuitability: 'all'
-        },
-        organic: {
-          nContent: 2,
-          pContent: 1,
-          kContent: 1,
-          costPerBag: 300, // 50kg bag
-          applicationType: 'soil incorporation',
-          timing: ['pre-planting'],
-          soilPhSuitability: 'all'
+          waterNeeds: 'moderate',
+          minRainfall: 40,
+          climate: ['tropical', 'subtropical'],
+          costPerKg: 30,
+          yieldPotential: { min: 8, max: 15 },
+          baseCosts: { seed: 5000, labor: 7000 }
         }
       };
+    }
+
+    // Helper to attach emoji to crop name
+    attachEmoji(name) {
+      const crop = name.toLowerCase();
+      const emoji = this.emojis[crop] || '🌱';
+      return `${name} ${emoji}`;
     }
   
     // Score crops based on soil and climate conditions
