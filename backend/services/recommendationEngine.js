@@ -154,13 +154,17 @@ class RecommendationEngine {
     let deductions = 0;
 
     // Soil type compatibility
-    if (!crop.soilType.includes(inputs.soilType?.toLowerCase())) {
-      deductions += 15;
+    if (inputs.soilType) {
+      if (!crop.soilType.includes(inputs.soilType.toLowerCase())) {
+        deductions += 15;
+      }
     }
 
     // Season compatibility
-    if (inputs.season && !crop.season.includes(inputs.season?.toLowerCase())) {
-      deductions += 20;
+    if (inputs.season) {
+      if (!crop.season.includes(inputs.season.toLowerCase())) {
+        deductions += 20;
+      }
     }
 
     // pH compatibility
@@ -168,24 +172,57 @@ class RecommendationEngine {
       const soilPh = parseFloat(inputs.pH);
       if (soilPh < crop.phRange.min || soilPh > crop.phRange.max) {
         deductions += 10;
+      } else {
+        score += 5; // Bonus for perfect pH
+      }
+    }
+
+    // NPK Fertilizer Cost / Deficit Matching (Crucial for Smart Farming PS)
+    if (inputs.soilN !== undefined && inputs.soilP !== undefined && inputs.soilK !== undefined) {
+      const requiredN = crop.nFertilizer.application || crop.nFertilizer.winter || 100;
+      const requiredP = crop.pFertilizer.application || 50;
+      const requiredK = crop.kFertilizer.application || 40;
+
+      const deficitN = Math.max(0, requiredN - parseFloat(inputs.soilN));
+      const deficitP = Math.max(0, requiredP - parseFloat(inputs.soilP));
+      const deficitK = Math.max(0, requiredK - parseFloat(inputs.soilK));
+
+      // Deduct points based on the chemical deficit (higher deficit -> more expensive to farm -> worse score)
+      const totalDeficit = deficitN + deficitP + deficitK;
+      deductions += totalDeficit * 0.08; 
+    }
+
+    // Organic Carbon Health Score
+    if (inputs.organicCarbon !== undefined) {
+      const oc = parseFloat(inputs.organicCarbon);
+      if (oc < 0.5) {
+        deductions += 15; // Poor soil health, penalize heavily for demanding crops
+      } else if (oc > 0.8) {
+        score += 10; // Excellent organic life, large bonus
       }
     }
 
     // Water availability
-    if (inputs.waterAvailability === 'low' && crop.waterNeeds === 'high') {
-      deductions += 25;
-    } else if (inputs.waterAvailability === 'high' && crop.waterNeeds === 'low') {
-      deductions += 5;
+    if (inputs.waterAvailability) {
+      if (inputs.waterAvailability === 'low' && crop.waterNeeds === 'high') {
+        deductions += 25;
+      } else if (inputs.waterAvailability === 'high' && crop.waterNeeds === 'low') {
+        deductions += 5;
+      }
     }
 
     // Budget compatibility
-    if (inputs.budget && inputs.budget < crop.costPerKg * 1000) {
-      deductions += 15;
+    if (inputs.budget) {
+      if (inputs.budget < crop.costPerKg * 1000) {
+        deductions += 15;
+      }
     }
 
     // Previous crop (crop rotation)
-    if (inputs.previousCrop && inputs.previousCrop.toLowerCase() === cropName.toLowerCase()) {
-      deductions += 20; // Penalize same crop
+    if (inputs.previousCrop) {
+      if (inputs.previousCrop.toLowerCase() === cropName.toLowerCase()) {
+        deductions += 20; // Penalize same crop
+      }
     }
 
     return Math.max(0, score - deductions);

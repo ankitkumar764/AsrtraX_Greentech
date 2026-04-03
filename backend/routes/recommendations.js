@@ -37,7 +37,7 @@ router.post('/get', (req, res) => {
 // POST /api/recommendations/soil-report
 router.post('/soil-report', (req, res) => {
   try {
-    const { soilN, soilP, soilK, pH, season, crop, budget } = req.body;
+    const { soilN, soilP, soilK, pH, organicCarbon, budget } = req.body;
 
     if (!soilN || !soilP || !soilK || !pH) {
       return res.status(400).json({
@@ -46,27 +46,29 @@ router.post('/soil-report', (req, res) => {
       });
     }
 
-    if (!crop) {
-      return res.status(400).json({
-        error: 'Crop name is required'
-      });
-    }
+    // Pass all parameters to the engine to automatically deduce the best crops
+    const inputs = {
+      soilN: parseFloat(soilN),
+      soilP: parseFloat(soilP),
+      soilK: parseFloat(soilK),
+      pH: parseFloat(pH),
+      organicCarbon: organicCarbon ? parseFloat(organicCarbon) : undefined,
+      budget: budget ? parseFloat(budget) : undefined
+    };
 
-    // Calculate NPK requirements
-    const npk = recommendationEngine.calculateNPK(crop, soilN, soilP, soilK, pH);
-    const fertilizer = recommendationEngine.recommendFertilizers(crop, npk, budget);
+    const recommendations = recommendationEngine.generateRecommendations(inputs);
 
     return res.json({
       success: true,
-      crop,
       soilAnalysis: {
-        nitrogen: soilN,
-        phosphorus: soilP,
-        potassium: soilK,
-        pH: pH
+        nitrogen: inputs.soilN,
+        phosphorus: inputs.soilP,
+        potassium: inputs.soilK,
+        pH: inputs.pH,
+        organicCarbon: inputs.organicCarbon
       },
-      npkRequirements: npk,
-      fertilizerPlan: fertilizer,
+      topCrops: recommendations.recommendations, // This holds the array of top 3 crops with their individual fertilizer plans
+      generalAdvice: recommendations.generalAdvice,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
