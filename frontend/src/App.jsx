@@ -5,6 +5,9 @@ import SoilReportAdvisor from './pages/SoilReportAdvisor';
 import QuestionnaireAdvisor from './pages/QuestionnaireAdvisor';
 import SoilTestingLabs from './pages/SoilTestingLabs';
 import GovernmentSchemes from './pages/GovernmentSchemes';
+import VoiceAssistant from './pages/VoiceAssistant';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
+import translations from './locales/translations';
 import './styles/App.css';
 
 function AppContent() {
