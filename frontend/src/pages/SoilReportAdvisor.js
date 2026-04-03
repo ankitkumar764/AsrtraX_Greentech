@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import confetti from 'canvas-confetti';
+import { 
+  TestTube, ArrowUpRight, ArrowDownRight, Leaf, 
+  CircleDollarSign, IndianRupee, PackageOpen, 
+  Clock, Lightbulb, CheckCircle, Sprout 
+} from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import translations from '../locales/translations';
 import api from '../services/api';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Leaf, FileBarChart, ArrowUpRight, ArrowDownRight, Sprout, TestTube, CheckCircle, PackageOpen, Lightbulb, CircleDollarSign, IndianRupee, Clock } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import '../styles/Forms.css';
 
 function SoilReportAdvisor() {
@@ -17,7 +21,8 @@ function SoilReportAdvisor() {
     soilK: '',
     pH: '',
     crop: '',
-    budget: ''
+    budget: '',
+    landArea: '1'
   });
 
   const [results, setResults] = useState(null);
@@ -201,6 +206,20 @@ function SoilReportAdvisor() {
                 />
               </div>
 
+              <div className="form-group">
+                <label>{language === 'en' ? 'Land Area (Hectares) *' : 'भूमि क्षेत्र (हेक्टेयर) *'}</label>
+                <input
+                  type="number"
+                  name="landArea"
+                  value={formData.landArea}
+                  onChange={handleChange}
+                  required
+                  min="0.1"
+                  step="0.1"
+                  placeholder="e.g., 2.5"
+                />
+              </div>
+
               <button type="submit" className="btn btn-primary" disabled={loading}>
                 {loading ? (
                   <span className="flex-center">
@@ -217,46 +236,20 @@ function SoilReportAdvisor() {
           <div className="results-section">
             <AnimatePresence mode="wait">
               {error && (
-                <motion.div 
-                  key="error"
-                  initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="alert alert-error crazy-error"
-                >
+                <div className="alert alert-error">
                   <strong>{t.error}:</strong> {error}
-                </motion.div>
+                </div>
               )}
 
-              {loading && !results && (
-                 <motion.div 
-                    key="loading-placeholder"
-                    className="placeholder loading-placeholder"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                 >
-                    <motion.div 
-                      animate={{ y: [0, -15, 0] }} 
-                      transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                    >
-                      <TestTube size={48} className="loading-icon" />
-                    </motion.div>
-                    <p>Analyzing soil data...</p>
-                 </motion.div>
-              )}
-
-              {results && !loading && (
+              {results && (
                 <motion.div 
-                  key="results"
-                  className="results"
                   variants={containerVariants}
                   initial="hidden"
                   animate="show"
+                  exit="hidden"
+                  className="results"
                 >
-                  <motion.h2 variants={itemVariants} className="results-title">
-                    <FileBarChart className="title-icon" /> {t.recommendationsFor} <span className="crop-highlight">{results.crop.charAt(0).toUpperCase() + results.crop.slice(1)}</span>
-                  </motion.h2>
+                <h2>📋 {t.recommendationsFor} {results.crop}</h2>
 
                   <motion.div variants={itemVariants} className="soil-analysis modern-card">
                     <div className="card-header">
