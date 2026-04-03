@@ -48,7 +48,9 @@ function QuestionnaireAdvisor() {
       };
       
       const response = await api.post('/recommendations/get', payload);
-      setResults(response.data);
+      // The backend returns { success: true, data: { recommendations: [...] }, ... }
+      // So we need to set results to response.data.data
+      setResults(response.data.data || response.data);
     } catch (err) {
       setError(err.response?.data?.error || t.tryAgain);
     } finally {
