@@ -2,6 +2,16 @@
 
 class RecommendationEngine {
   constructor() {
+    this.emojis = {
+      wheat: '🌾', rice: '🍚', maize: '🌽', cotton: '☁️',
+      sugarcane: '🎋', pulses: '🫘', vegetables: '🥦',
+      soybean: '🌱', groundnut: '🥜', mustard: '🌱'
+    };
+    this.fertilizers = {
+      urea: { costPerBag: 300, nContent: 46 }, // 46% Nitrogen
+      dap: { costPerBag: 1350, nContent: 18, pContent: 46 }, // 18% N, 46% P
+      mop: { costPerBag: 1700, kContent: 60 } // 60% Potassium
+    };
     this.cropDatabase = {
       wheat: {
         soilType: ['black', 'clay', 'loamy'],
@@ -94,27 +104,6 @@ class RecommendationEngine {
           nFertilizer: { application: 100 },
           pFertilizer: { application: 60 },
           kFertilizer: { application: 50 },
-          waterNeeds: 'moderate-high',
-          minRainfall: 40,
-          climate: ['tropical', 'subtropical', 'temperate'],
-          costPerKg: 20,
-          yieldPotential: { min: 10, max: 25 },
-          baseCosts: { seed: 5000, labor: 15000 }
-        }
-      };
-  
-      this.fertilizers = {
-        urea: {
-          nContent: 46,
-          pContent: 0,
-          kContent: 0,
-          costPerBag: 250, // 50kg bag
-          applicationType: 'split',
-          timing: ['early growth', 'mid growth'],
-          soilPhSuitability: 'all'
-        },
-        dap: {
-          nContent: 18,
           pContent: 46,
           kContent: 0,
           costPerBag: 1100, // 50kg bag
@@ -368,7 +357,7 @@ class RecommendationEngine {
   
         return {
           rank: cropRecommendations.indexOf(crop) + 1,
-          cropName: crop.name.charAt(0).toUpperCase() + crop.name.slice(1),
+          cropName: this.attachEmoji(crop.name.charAt(0).toUpperCase() + crop.name.slice(1)),
           matchScore: crop.score,
           reasoning: this.generateCropReasoning(crop.name, inputs),
           npkRequirements: npk,
@@ -405,7 +394,8 @@ class RecommendationEngine {
       }
   
       if (inputs.previousCrop && inputs.previousCrop.toLowerCase() !== crop.toLowerCase()) {
-        reasons.push(`✓ Good crop rotation after ${inputs.previousCrop}`);
+        const prevCropWithEmoji = this.attachEmoji(inputs.previousCrop.charAt(0).toUpperCase() + inputs.previousCrop.slice(1));
+        reasons.push(`✓ Good crop rotation after ${prevCropWithEmoji}`);
       }
   
       return reasons.length > 0 ? reasons : ['Suitable crop for your region'];

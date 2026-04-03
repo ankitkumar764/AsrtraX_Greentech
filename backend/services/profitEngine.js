@@ -96,6 +96,18 @@ const cropEconomics = {
 class ProfitEngine {
   constructor() {
     this.crops = cropEconomics;
+    this.emojis = {
+      wheat: '🌾', rice: '🍚', maize: '🌽', cotton: '☁️',
+      sugarcane: '🎋', pulses: '🫘', vegetables: '🥦',
+      soybean: '🌱', groundnut: '🥜', mustard: '🌱'
+    };
+  }
+
+  attachEmoji(name) {
+    if (!name) return '';
+    const cleanName = name.toLowerCase().trim();
+    const emoji = this.emojis[cleanName] || '';
+    return emoji ? `${emoji} ${name}` : name;
   }
 
   // Filter crops based on season, soil, logic etc.
@@ -188,7 +200,7 @@ class ProfitEngine {
 
       return {
         id: crop,
-        name: crop.charAt(0).toUpperCase() + crop.slice(1),
+        name: this.attachEmoji(crop.charAt(0).toUpperCase() + crop.slice(1)),
         costs,
         totalCost,
         expectedYield,
@@ -226,7 +238,7 @@ class ProfitEngine {
     }
     
     let tips = [
-      `Consider modern irrigation to reduce ${bestCrop.name.toLowerCase()} water costs.`,
+      `Consider modern irrigation to reduce ${bestCrop.name.toLowerCase().replace(/[^a-z]/g, '')} water costs.`,
       `Pooling labor resources with local farmers can save up to 20% on labor costs.`,
       `Apply for government subsidies to offset fertilizer expenses.`
     ];

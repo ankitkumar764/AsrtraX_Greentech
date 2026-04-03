@@ -249,7 +249,7 @@ function SoilReportAdvisor() {
                   exit="hidden"
                   className="results"
                 >
-                <h2>📋 {t.recommendationsFor} {results.crop}</h2>
+                <h2>📋 {t.recommendationsFor} {t[results.crop] || (results.crop.charAt(0).toUpperCase() + results.crop.slice(1))}</h2>
 
                   <motion.div variants={itemVariants} className="soil-analysis modern-card">
                     <div className="card-header">
