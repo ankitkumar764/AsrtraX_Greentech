@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import api from '../services/api';
 import '../styles/VoiceAssistant.css';
 
 const VoiceAssistant = () => {
@@ -10,6 +10,57 @@ const VoiceAssistant = () => {
   const [error, setError] = useState(null);
 
   const recognitionRef = useRef(null);
+
+  const speakResponse = useCallback((text) => {
+    if (!window.speechSynthesis) return;
+
+    // Stop current speech
+    window.speechSynthesis.cancel();
+
+    // Clean up text for speech (remove markdown asterisks and bullets)
+    const cleanText = text.replace(/[*#]/g, '').replace(/•/g, ',');
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'hi-IN'; // Hindi voice
+    utterance.rate = 0.9;     // Slightly slower for clarity
+    utterance.pitch = 1.0;
+
+    // Attempt to find a Hindi voice specifically
+    const voices = window.speechSynthesis.getVoices();
+    const hindiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
+    if (hindiVoice) {
+      utterance.voice = hindiVoice;
+    }
+
+    window.speechSynthesis.speak(utterance);
+  }, []);
+
+  const processVoiceCommand = useCallback(async (text) => {
+    const cleaned = String(text || '').trim();
+    if (!cleaned) {
+      setError('Please say or type a question.');
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await api.post('/voice-assistant', { transcript: cleaned });
+
+      if (response.data && response.data.success) {
+        const textResponse = response.data.response;
+        setAiResponse(textResponse);
+        speakResponse(textResponse);
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Could not get a response from the AI. ' + (err.response?.data?.error || err.message));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [speakResponse]);
 
   useEffect(() => {
     // Initialize Web Speech API
@@ -33,9 +84,18 @@ const VoiceAssistant = () => {
     };
 
     recognition.onresult = (event) => {
-      const currentTranscript = event.results[0][0].transcript;
-      setTranscript(currentTranscript);
-      processVoiceCommand(currentTranscript);
+      // SpeechRecognition can sometimes return multiple results; take the last one.
+      const lastResultIndex = event.results.length - 1;
+      const currentTranscript = event.results[lastResultIndex]?.[0]?.transcript || '';
+      const cleaned = String(currentTranscript).trim();
+      setTranscript(cleaned);
+
+      if (cleaned) {
+        processVoiceCommand(cleaned);
+      } else {
+        setError('Could not capture your speech. Please try again.');
+        setIsLoading(false);
+      }
     };
 
     recognition.onerror = (event) => {
@@ -61,7 +121,7 @@ const VoiceAssistant = () => {
       }
       window.speechSynthesis.cancel();
     };
-  }, []);
+  }, [processVoiceCommand]);
 
   const toggleListen = () => {
     if (isListening) {
@@ -80,50 +140,6 @@ const VoiceAssistant = () => {
     }
   };
 
-  const processVoiceCommand = async (text) => {
-    setIsLoading(true);
-    try {
-      // Assuming your backend runs on same host/port if proxied, or fully qualified URL
-      const response = await axios.post('/api/voice-assistant', { transcript: text });
-      
-      if (response.data && response.data.success) {
-        const textResponse = response.data.response;
-        setAiResponse(textResponse);
-        speakResponse(textResponse);
-      } else {
-        throw new Error("Invalid response from server");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Could not get a response from the AI. " + (err.response?.data?.error || err.message));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const speakResponse = (text) => {
-    if (!window.speechSynthesis) return;
-
-    // Stop current speech
-    window.speechSynthesis.cancel();
-
-    // Clean up text for speech (remove markdown asterisks and bullets)
-    const cleanText = text.replace(/[*#]/g, '').replace(/•/g, ',');
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'hi-IN'; // Hindi voice
-    utterance.rate = 0.9;     // Slightly slower for clarity
-    utterance.pitch = 1.0;
-
-    // Attempt to find a Hindi voice specifically
-    const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
-    if (hindiVoice) {
-      utterance.voice = hindiVoice;
-    }
-
-    window.speechSynthesis.speak(utterance);
-  };
 
   return (
     <div className="voice-assistant-container">
