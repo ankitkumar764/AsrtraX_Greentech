@@ -37,7 +37,8 @@ router.post('/get', (req, res) => {
 // POST /api/recommendations/soil-report
 router.post('/soil-report', (req, res) => {
   try {
-    const { soilN, soilP, soilK, pH, season, crop, budget } = req.body;
+    const { soilN, soilP, soilK, pH, season, crop, budget, landArea } = req.body;
+    const area = parseFloat(landArea) || 1;
 
     if (!soilN || !soilP || !soilK || !pH) {
       return res.status(400).json({
@@ -54,11 +55,13 @@ router.post('/soil-report', (req, res) => {
 
     // Calculate NPK requirements
     const npk = recommendationEngine.calculateNPK(crop, soilN, soilP, soilK, pH);
-    const fertilizer = recommendationEngine.recommendFertilizers(crop, npk, budget);
+    const fertilizer = recommendationEngine.recommendFertilizers(crop, npk, budget, area);
+    const financials = recommendationEngine.calculateFinancials(crop, fertilizer.totalCost, area);
 
     return res.json({
       success: true,
       crop,
+      area,
       soilAnalysis: {
         nitrogen: soilN,
         phosphorus: soilP,
@@ -67,6 +70,7 @@ router.post('/soil-report', (req, res) => {
       },
       npkRequirements: npk,
       fertilizerPlan: fertilizer,
+      financials: financials,
       timestamp: new Date().toISOString()
     });
   } catch (error) {

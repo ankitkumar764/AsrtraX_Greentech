@@ -82,42 +82,53 @@ const VoiceAssistant = () => {
 
   const processVoiceCommand = async (text) => {
     setIsLoading(true);
+    setError(null);
+
     try {
-      // Assuming your backend runs on same host/port if proxied, or fully qualified URL
-      const response = await axios.post('/api/voice-assistant', { transcript: text });
-      
-      if (response.data && response.data.success) {
-        const textResponse = response.data.response;
-        setAiResponse(textResponse);
-        speakResponse(textResponse);
-      } else {
-        throw new Error("Invalid response from server");
+      const apiUrl = '/api/voice-assistant';
+      const response = await axios.post(apiUrl, { transcript: text });
+
+      if (!response || !response.data || response.data.success !== true) {
+        throw new Error(response?.data?.error || 'Invalid server response');
       }
+
+      const textResponse = response.data.response;
+      if (!textResponse || typeof textResponse !== 'string') {
+        throw new Error('Empty assistant response');
+      }
+
+      setAiResponse(textResponse);
+      speakResponse(textResponse);
     } catch (err) {
       console.error(err);
-      setError("Could not get a response from the AI. " + (err.response?.data?.error || err.message));
+      if (err.response?.status === 429) {
+        setError('AI Limit reached. Please wait 1 minute before asking another question.');
+      } else {
+        setError('Could not get a response from the AI. ' + (err.response?.data?.error || err.message));
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   const speakResponse = (text) => {
-    if (!window.speechSynthesis) return;
+    if (!text || typeof text !== 'string' || !window.speechSynthesis) return;
 
     // Stop current speech
     window.speechSynthesis.cancel();
 
     // Clean up text for speech (remove markdown asterisks and bullets)
-    const cleanText = text.replace(/[*#]/g, '').replace(/•/g, ',');
+    const cleanText = text.replace(/[*#]/g, '').replace(/•/g, ',').trim();
+    if (!cleanText) return;
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = 'hi-IN'; // Hindi voice
     utterance.rate = 0.9;     // Slightly slower for clarity
     utterance.pitch = 1.0;
 
-    // Attempt to find a Hindi voice specifically
-    const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
+    // Ensure voice list has loaded; fallback to default if none found.
+    const voices = window.speechSynthesis.getVoices() || [];
+    const hindiVoice = voices.find(v => v.lang.toLowerCase().includes('hi')) || voices[0];
     if (hindiVoice) {
       utterance.voice = hindiVoice;
     }

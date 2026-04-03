@@ -21,6 +21,7 @@ Always use very simple language. Avoid technical jargon. Keep answers short and 
 router.post('/', async (req, res) => {
   try {
     const { transcript } = req.body;
+    console.log("Transcript received:", transcript);
 
     if (!transcript) {
       return res.status(400).json({ error: 'Transcript is required' });
@@ -35,25 +36,47 @@ router.post('/', async (req, res) => {
 
     // Call the Gemini model
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: transcript,
+      model: 'gemini-1.5-flash',
+      systemInstruction: SYSTEM_INSTRUCTION,
+      contents: [{ parts: [{ text: transcript }] }],
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
         temperature: 0.3,
       }
     });
 
+    const textResponse = response?.text
+      || (response?.output?.[0]?.items ? response.output[0].items.map(i => i.text).join('') : '')
+      || '';
+
+    if (!textResponse) {
+      return res.status(500).json({
+        success: false,
+        response: '',
+        error: 'AI returned empty text response'
+      });
+    }
+
     return res.json({
       success: true,
-      response: response.text,
+      response: textResponse.trim(),
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
     console.error('Error generating AI response:', error);
+    
+    // Status 429 is "Quota Exceeded" or "Rate Limited"
+    if (error.status === 429 || error.message?.includes('429')) {
+      return res.status(429).json({
+        error: 'API Quota reached or Rate Limited',
+        message: 'Aapki API limit khatam ho gayi hai. Kripya 1 minute baad fir se koshish karein. (API limit reached. Please try again in 1 minute.)'
+      });
+    }
+
     return res.status(500).json({
       error: 'Failed to generate response',
-      message: error.message
+      message: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });

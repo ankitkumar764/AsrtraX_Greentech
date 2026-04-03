@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import translations from '../locales/translations';
 import api from '../services/api';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
 import '../styles/Forms.css';
 
 function SoilReportAdvisor() {
@@ -14,7 +17,8 @@ function SoilReportAdvisor() {
     soilK: '',
     pH: '',
     crop: '',
-    budget: ''
+    budget: '',
+    landArea: '1'
   });
 
   const [results, setResults] = useState(null);
@@ -140,6 +144,20 @@ function SoilReportAdvisor() {
                 />
               </div>
 
+              <div className="form-group">
+                <label>{language === 'en' ? 'Land Area (Hectares) *' : 'भूमि क्षेत्र (हेक्टेयर) *'}</label>
+                <input
+                  type="number"
+                  name="landArea"
+                  value={formData.landArea}
+                  onChange={handleChange}
+                  required
+                  min="0.1"
+                  step="0.1"
+                  placeholder="e.g., 2.5"
+                />
+              </div>
+
               <button type="submit" className="btn btn-primary" disabled={loading}>
                 {loading ? t.loading : t.getRecommendations}
               </button>
@@ -156,6 +174,33 @@ function SoilReportAdvisor() {
             {results && (
               <div className="results">
                 <h2>📋 {t.recommendationsFor} {results.crop}</h2>
+
+                {/* Financial Comparison Chart */}
+                {results.financials && (
+                  <div className="chart-container card-panel">
+                    <h3>{language === 'en' ? 'Projected Financial Analysis' : 'प्रक्षेपित वित्तीय विश्लेषण'}</h3>
+                    <div style={{ width: '100%', height: 300 }}>
+                      <ResponsiveContainer>
+                        <BarChart
+                          data={[{
+                            name: results.crop.charAt(0).toUpperCase() + results.crop.slice(1),
+                            Investment: results.financials.investment,
+                            Profit: results.financials.profit
+                          }]}
+                          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="name" />
+                          <YAxis tickFormatter={(val) => `₹${(val / 1000)}k`} />
+                          <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                          <Legend />
+                          <Bar dataKey="Investment" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="Profit" fill="#10b981" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
 
                 <div className="soil-analysis">
                   <h3>{t.currentSoilStatus}</h3>
