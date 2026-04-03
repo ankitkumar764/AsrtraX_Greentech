@@ -11,6 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 // Routes - Trigger nodemon restart 2
 const recommendationRoute = require('./routes/recommendations');
 const soilLabsRoute = require('./routes/soilLabs');

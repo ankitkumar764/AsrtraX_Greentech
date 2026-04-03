@@ -5,9 +5,11 @@ const router = express.Router();
 
 let ai;
 try {
+  console.log("Initializing Gemini with key length:", process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.length : "undefined");
+  console.log("Is GEMINI_API_KEY undefined?", process.env.GEMINI_API_KEY === undefined);
   ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 } catch (error) {
-  console.log("Could not initialize Google GenAI. Please ensure GEMINI_API_KEY is set in .env");
+  console.log("Could not initialize Google GenAI. Please ensure GEMINI_API_KEY is set in .env", error);
 }
 
 // System prompt for the Agriculture Assistant
@@ -27,6 +29,9 @@ router.post('/', async (req, res) => {
     if (!ai) {
       return res.status(500).json({ error: 'AI Service is not configured. Missing API Key.' });
     }
+
+    console.log("Endpoint called. GEMINI_API_KEY in env length:", process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.length : "undefined");
+    console.log("AI config apiKey length:", ai.apiKey ? ai.apiKey.length : "undefined");
 
     // Call the Gemini model
     const response = await ai.models.generateContent({
