@@ -17,12 +17,14 @@ const recommendationRoute = require('./routes/recommendations');
 const soilLabsRoute = require('./routes/soilLabs');
 const schemesRoute = require('./routes/schemes');
 const voiceAssistantRoute = require('./routes/voiceAssistant');
+const profitAnalysisRoute = require('./routes/profitAnalysis');
 
 // Use routes
 app.use('/api/recommendations', recommendationRoute);
 app.use('/api/soil-labs', soilLabsRoute);
 app.use('/api/schemes', schemesRoute);
 app.use('/api/voice-assistant', voiceAssistantRoute);
+app.use('/api/profit-analysis', profitAnalysisRoute);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

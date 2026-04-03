@@ -1,0 +1,174 @@
+/* Profit Analysis Page Specific Styles */
+.profit-analysis .page-header {
+  margin-bottom: 30px;
+}
+
+.profit-analysis .form-section {
+  background: white;
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+
+.row-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.row-group .half {
+  flex: 1;
+}
+
+/* Smart Insight Banner */
+.smart-insight-banner {
+  display: flex;
+  background: linear-gradient(135deg, var(--primary-light) 0%, #dcfce7 100%);
+  border-left: 5px solid var(--primary-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  margin-bottom: 30px;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.insight-icon {
+  font-size: 2.5rem;
+}
+
+.insight-content h3 {
+  color: var(--primary-dark);
+  margin: 0 0 10px 0;
+  font-size: 1.25rem;
+}
+
+.insight-content p {
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.insight-tips {
+  margin: 0;
+  padding-left: 20px;
+  color: #374151;
+}
+
+/* Metric Cards Grid */
+.metric-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.analysis-card {
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  padding: 20px;
+  transition: transform var(--transition-fast);
+  border-top: 4px solid #ccc;
+}
+
+.analysis-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.analysis-card.high { border-top-color: #10b981; }
+.analysis-card.medium { border-top-color: #f59e0b; }
+.analysis-card.low { border-top-color: #ef4444; }
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.card-header h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.highlight-row {
+  font-size: 1.1rem;
+  background-color: #f9fafb;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Risk Indicator */
+.risk-indicator {
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.risk-high { background-color: #fee2e2; color: #991b1b; }
+.risk-medium { background-color: #fef3c7; color: #92400e; }
+.risk-low { background-color: #d1fae5; color: #065f46; }
+
+.risk-reason {
+  margin: 5px 0 0 0;
+  font-size: 0.85rem;
+}
+
+/* Tables & Panels */
+.card-panel {
+  background: white;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 30px;
+}
+
+.mt-4 {
+  margin-top: 25px;
+}
+
+.responsive-table {
+  overflow-x: auto;
+}
+
+.responsive-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.responsive-table th, .responsive-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.responsive-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.responsive-table tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .row-group {
+    flex-direction: column;
+    gap: 15px;
+  }
+}

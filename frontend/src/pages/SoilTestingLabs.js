@@ -13,7 +13,7 @@ function SoilTestingLabs() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const states = ['Maharashtra', 'Uttar Pradesh', 'Karnataka'];
+  const states = ['Maharashtra', 'Uttar Pradesh', 'Karnataka', 'Punjab', 'Haryana', 'Gujarat', 'Madhya Pradesh', 'Rajasthan', 'Tamil Nadu', 'Andhra Pradesh', 'West Bengal'];
 
   const handleStateChange = async (state) => {
     setSelectedState(state);

@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import translations from '../locales/translations';
 import api from '../services/api';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
 import '../styles/Forms.css';
 
 function QuestionnaireAdvisor() {
@@ -17,6 +20,7 @@ function QuestionnaireAdvisor() {
     season: '',
     location: '',
     budget: '',
+    landArea: '1',
     cropIssues: ''
   });
 
@@ -41,10 +45,10 @@ function QuestionnaireAdvisor() {
       // Add default values for expected fields
       const payload = {
         ...formData,
-        soilN: 200,
-        soilP: 20,
-        soilK: 150,
-        pH: 6.8
+        soilN: 50,
+        soilP: 10,
+        soilK: 30,
+        pH: 6.5
       };
       
       const response = await api.post('/recommendations/get', payload);
@@ -177,7 +181,27 @@ function QuestionnaireAdvisor() {
                   <option value="karnataka">Karnataka</option>
                   <option value="punjab">Punjab</option>
                   <option value="haryana">Haryana</option>
+                  <option value="gujarat">Gujarat</option>
+                  <option value="madhya_pradesh">Madhya Pradesh</option>
+                  <option value="rajasthan">Rajasthan</option>
+                  <option value="tamil_nadu">Tamil Nadu</option>
+                  <option value="andhra_pradesh">Andhra Pradesh</option>
+                  <option value="west_bengal">West Bengal</option>
                 </select>
+              </div>
+              
+              <div className="form-group">
+                <label>{language === 'en' ? 'Land Area (Hectares) *' : 'भूमि क्षेत्र (हेक्टेयर) *'}</label>
+                <input
+                  type="number"
+                  name="landArea"
+                  value={formData.landArea}
+                  onChange={handleChange}
+                  required
+                  min="0.1"
+                  step="0.1"
+                  placeholder="e.g., 2.5"
+                />
               </div>
 
               <div className="form-group">
@@ -220,6 +244,31 @@ function QuestionnaireAdvisor() {
               <div className="results">
                 <h2>🎯 {t.recommendedCrops}</h2>
 
+                {/* Financial Comparison Chart */}
+                <div className="chart-container card-panel">
+                  <h3>{language === 'en' ? 'Projected Financial Comparison' : 'प्रक्षेपित वित्तीय तुलना'}</h3>
+                  <div style={{ width: '100%', height: 300 }}>
+                    <ResponsiveContainer>
+                      <BarChart
+                        data={results.recommendations.map(rec => ({
+                          name: rec.cropName,
+                          Investment: rec.financials.investment,
+                          Profit: rec.financials.profit
+                        }))}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis tickFormatter={(val) => `₹${(val / 1000)}k`} />
+                        <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
+                        <Legend />
+                        <Bar dataKey="Investment" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="Profit" fill="#10b981" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
                 {results.recommendations.map((rec, idx) => (
                   <div key={idx} className="recommendation-card">
                     <div className="recommendation-header">
@@ -260,7 +309,7 @@ function QuestionnaireAdvisor() {
                         ))}
 
                         <div className="total-cost">
-                          <strong>{t.totalFertilizerCost}: ₹{rec.fertilizerPlan.totalCost.toFixed(0)} / hectare</strong>
+                          <strong>{t.totalFertilizerCost}: ₹{rec.fertilizerPlan.totalCost.toFixed(0)} ({formData.landArea} {language === 'en' ? 'Hectares' : 'हेक्टेयर'})</strong>
                         </div>
                       </div>
 
