@@ -5,8 +5,6 @@ import SoilReportAdvisor from './pages/SoilReportAdvisor';
 import QuestionnaireAdvisor from './pages/QuestionnaireAdvisor';
 import SoilTestingLabs from './pages/SoilTestingLabs';
 import GovernmentSchemes from './pages/GovernmentSchemes';
-import { LanguageProvider, useLanguage } from './context/LanguageContext';
-import translations from './locales/translations';
 import './styles/App.css';
 
 function AppContent() {
@@ -66,6 +64,11 @@ function AppContent() {
                   {t.navSchemes}
                 </Link>
               </li>
+              <li>
+                <Link to="/voice-assistant" onClick={() => setActiveNav('voice')} className={activeNav === 'voice' ? 'active' : ''}>
+                  🎤 Voice Assistant
+                </Link>
+              </li>
             </ul>
           </div>
         </nav>
@@ -77,6 +80,7 @@ function AppContent() {
             <Route path="/questionnaire" element={<QuestionnaireAdvisor />} />
             <Route path="/soil-labs" element={<SoilTestingLabs />} />
             <Route path="/schemes" element={<GovernmentSchemes />} />
+            <Route path="/voice-assistant" element={<VoiceAssistant />} />
           </Routes>
         </main>
 

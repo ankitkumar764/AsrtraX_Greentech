@@ -1,0 +1,200 @@
+.voice-assistant-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  min-height: calc(100vh - 160px); /* header/footer approx */
+}
+
+.voice-assistant-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.voice-assistant-header h2 {
+  color: #2c5e1a; /* Dark green */
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.voice-assistant-header p {
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.voice-assistant-main {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Mic Button Styles */
+.mic-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.mic-button {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #4caf50;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  color: white;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.mic-button:hover:not(:disabled) {
+  transform: scale(1.05);
+  background: #43a047;
+}
+
+.mic-button:disabled {
+  background: #a5d6a7;
+  cursor: not-allowed;
+}
+
+.mic-button.active {
+  background: #f44336;
+  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+  animation: pulse 1.5s infinite;
+}
+
+.mic-status {
+  margin-top: 15px;
+  font-weight: 600;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.mic-container.listening .mic-status {
+  color: #f44336;
+}
+
+.mic-container.loading .mic-button {
+  animation: pulse-green 1.5s infinite;
+}
+
+.mic-container.loading .mic-status {
+  color: #4caf50;
+}
+
+/* Chat Display */
+.chat-display {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.message {
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.user-message {
+  background: #e8f5e9;
+  border-left: 5px solid #4caf50;
+}
+
+.ai-message {
+  background: #f5f5f5;
+  border-left: 5px solid #2196f3;
+}
+
+.message-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.message-content {
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.replay-button {
+  margin-top: 15px;
+  background: none;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #555;
+  transition: all 0.2s;
+}
+
+.replay-button:hover {
+  background: #eee;
+  border-color: #999;
+}
+
+.error-message {
+  width: 100%;
+  max-width: 600px;
+  background: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  text-align: center;
+  border: 1px solid #ffcdd2;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(244, 67, 54, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+  }
+}
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .voice-assistant-main {
+    padding: 20px;
+  }
+  
+  .mic-button {
+    width: 80px;
+    height: 80px;
+    font-size: 2.5rem;
+  }
+}
