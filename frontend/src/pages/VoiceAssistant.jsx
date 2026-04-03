@@ -140,50 +140,6 @@ const VoiceAssistant = () => {
     }
   };
 
-  const processVoiceCommand = async (text) => {
-    setIsLoading(true);
-    try {
-      // Assuming your backend runs on same host/port if proxied, or fully qualified URL
-      const response = await axios.post('/api/voice-assistant', { transcript: text });
-      
-      if (response.data && response.data.success) {
-        const textResponse = response.data.response;
-        setAiResponse(textResponse);
-        speakResponse(textResponse);
-      } else {
-        throw new Error("Invalid response from server");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Could not get a response from the AI. " + (err.response?.data?.error || err.message));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const speakResponse = (text) => {
-    if (!window.speechSynthesis) return;
-
-    // Stop current speech
-    window.speechSynthesis.cancel();
-
-    // Clean up text for speech (remove markdown asterisks and bullets)
-    const cleanText = text.replace(/[*#]/g, '').replace(/•/g, ',');
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'hi-IN'; // Hindi voice
-    utterance.rate = 0.9;     // Slightly slower for clarity
-    utterance.pitch = 1.0;
-
-    // Attempt to find a Hindi voice specifically
-    const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
-    if (hindiVoice) {
-      utterance.voice = hindiVoice;
-    }
-
-    window.speechSynthesis.speak(utterance);
-  };
 
   return (
     <div className="voice-assistant-container">
