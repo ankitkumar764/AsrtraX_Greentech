@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
+import translations from '../locales/translations';
 import '../styles/VoiceAssistant.css';
 
 const VoiceAssistant = () => {
+  const { language } = useLanguage();
+  const t = translations[language] || translations['en'];
+
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -21,7 +26,7 @@ const VoiceAssistant = () => {
     const cleanText = text.replace(/[*#]/g, '').replace(/•/g, ',');
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.lang = 'hi-IN'; // Hindi voice
+    utterance.lang = language === 'hi' ? 'hi-IN' : (language === 'gu' ? 'gu-IN' : 'en-IN'); 
     utterance.rate = 0.9;     // Slightly slower for clarity
     utterance.pitch = 1.0;
 
@@ -38,7 +43,7 @@ const VoiceAssistant = () => {
   const processVoiceCommand = useCallback(async (text) => {
     const cleaned = String(text || '').trim();
     if (!cleaned) {
-      setError('Please say or type a question.');
+      setError(t.errorNoInput || 'Please say or type a question.');
       setIsLoading(false);
       return;
     }
@@ -56,7 +61,7 @@ const VoiceAssistant = () => {
       }
     } catch (err) {
       console.error(err);
-      setError('Could not get a response from the AI. ' + (err.response?.data?.error || err.message));
+      setError((t.errorServerConnect || 'Could not get a response from the AI.') + ' ' + (err.response?.data?.error || err.message));
     } finally {
       setIsLoading(false);
     }
@@ -67,14 +72,14 @@ const VoiceAssistant = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setError("Your browser does not support Speech Recognition. Please use Chrome or Edge.");
+      setError(t.errorNoSpeech || "Your browser does not support Speech Recognition. Please use Chrome or Edge.");
       return;
     }
 
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = 'en-IN'; // Works well for Hinglish
+    recognition.lang = language === 'hi' ? 'hi-IN' : (language === 'gu' ? 'gu-IN' : 'en-IN'); 
 
     recognition.onstart = () => {
       setIsListening(true);
@@ -93,7 +98,7 @@ const VoiceAssistant = () => {
       if (cleaned) {
         processVoiceCommand(cleaned);
       } else {
-        setError('Could not capture your speech. Please try again.');
+        setError(t.errorSpeechCapture || 'Could not capture your speech. Please try again.');
         setIsLoading(false);
       }
     };
@@ -103,9 +108,9 @@ const VoiceAssistant = () => {
       setIsListening(false);
       
       if (event.error === 'not-allowed') {
-        setError('Microphone permission denied. Please allow microphone access.');
+        setError(t.errorMicPermission || 'Microphone permission denied. Please allow microphone access.');
       } else {
-        setError('Error listening to your voice: ' + event.error);
+        setError((t.errorMicGeneric || 'Error listening to your voice: ') + event.error);
       }
     };
 
@@ -134,7 +139,7 @@ const VoiceAssistant = () => {
           recognitionRef.current.start();
         } catch (e) {
           console.error(e);
-          setError("Could not start microphone.");
+          setError(t.errorMicStart || "Could not start microphone.");
         }
       }
     }
@@ -144,8 +149,8 @@ const VoiceAssistant = () => {
   return (
     <div className="voice-assistant-container">
       <div className="voice-assistant-header">
-        <h2>🎤 Smart Farmer Voice Assistant</h2>
-        <p>Ask anything about crops, soil, or farming in Hinglish or English!</p>
+        <h2>{t.voiceAssistantTitle}</h2>
+        <p>{t.voiceAssistantDesc}</p>
       </div>
 
       <div className="voice-assistant-main">
@@ -160,7 +165,7 @@ const VoiceAssistant = () => {
             <div className="mic-icon">🎙️</div>
           </button>
           <div className="mic-status">
-            {isListening ? "Listening..." : isLoading ? "Thinking..." : "Tap to Speak"}
+            {isListening ? t.listening : isLoading ? t.thinking : t.tapToSpeak}
           </div>
         </div>
 
@@ -170,7 +175,7 @@ const VoiceAssistant = () => {
             <input 
                type="text" 
                id="manual-text-input"
-               placeholder="Sawal type karein ya mic use karein..." 
+               placeholder={t.typeQuestion} 
                style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '1rem' }}
                onKeyDown={(e) => {
                  if (e.key === 'Enter' && e.target.value.trim()) {
@@ -193,20 +198,20 @@ const VoiceAssistant = () => {
               }}
               style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', background: '#2196f3', color: 'white', cursor: 'pointer', fontWeight: 'bold' }}
             >
-              Send
+              {t.sendButton}
             </button>
           </div>
 
           {transcript && (
             <div className="message user-message">
-              <div className="message-label">You:</div>
+              <div className="message-label">{t.youSaid}</div>
               <div className="message-content">{transcript}</div>
             </div>
           )}
 
           {aiResponse && (
             <div className="message ai-message">
-              <div className="message-label">Assistant:</div>
+              <div className="message-label">{t.assistantSays}</div>
               <div className="message-content" style={{ whiteSpace: "pre-wrap" }}>
                 {aiResponse}
               </div>
@@ -215,7 +220,7 @@ const VoiceAssistant = () => {
                  onClick={() => speakResponse(aiResponse)}
                  title="Play audio again"
               >
-                🔊 Replay Audio
+                {t.replayAudio}
               </button>
             </div>
           )}

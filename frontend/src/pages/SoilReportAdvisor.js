@@ -98,18 +98,18 @@ function SoilReportAdvisor() {
       } else {
         const errType = response.data?.errorType;
         if (errType === 'SCANNED_PDF') {
-          setError('📷 Ya PDF scan hai. Image (JPG/PNG) upload karein!');
+          setError(t.errorScannedPdf || '📷 Ya PDF scan hai. Image (JPG/PNG) upload karein!');
         } else {
-          setError('❌ Report se data extract nahi hua. Values manually bharein.');
+          setError(t.errorNoData || '❌ Report se data extract nahi hua. Values manually bharein.');
         }
       }
     } catch (err) {
       console.error('Upload Error:', err);
       const errData = err.response?.data;
       if (errData?.errorType === 'SCANNED_PDF') {
-        setError('📷 Ya PDF scan hai. Image (JPG/PNG) upload karein!');
+        setError(t.errorScannedPdf || '📷 Ya PDF scan hai. Image (JPG/PNG) upload karein!');
       } else {
-        setError('⚠️ Server se connect nahi ho paya. Backend check karein.');
+        setError(t.errorServerConnect || '⚠️ Server se connect nahi ho paya. Backend check karein.');
       }
     } finally {
       setIsUploading(false);
@@ -164,7 +164,7 @@ function SoilReportAdvisor() {
         setHighlightedFields([]);
       }, 8000);
     } else {
-      setError('❌ Could not find any soil metrics in this document. Please enter values manually.');
+      setError(t.errorNoData || '❌ Could not find any soil metrics in this document. Please enter values manually.');
     }
   };
 
@@ -248,7 +248,7 @@ function SoilReportAdvisor() {
         <div className="page-header" style={{ marginBottom: '60px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'var(--primary-light)', color: 'var(--primary-color)', padding: '8px 20px', borderRadius: '40px', marginBottom: '20px' }}>
             <Sparkles size={18} />
-            <span style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase' }}>Expert Decision System</span>
+            <span style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase' }}>{t.expertDecisionSystem}</span>
           </div>
           <h1 style={{ fontSize: '3.5rem', fontWeight: '900', color: 'var(--dark-color)' }}>{t.soilReportTitle}</h1>
           <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto' }}>{t.soilReportDesc}</p>
@@ -264,15 +264,15 @@ function SoilReportAdvisor() {
               className="modern-card"
               style={{ marginBottom: '30px', padding: '30px', border: '2px solid var(--primary-light)', background: 'hsl(145, 63%, 98%)', position: 'relative', overflow: 'hidden' }}
             >
-              <div className="card-badge" style={{ position: 'absolute', top: '15px', right: '15px', background: 'var(--primary-color)', color: 'white', padding: '5px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800' }}>AI POWERED</div>
+              <div className="card-badge" style={{ position: 'absolute', top: '15px', right: '15px', background: 'var(--primary-color)', color: 'white', padding: '5px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800' }}>{t.aiPowered}</div>
               
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '25px' }}>
                 <div style={{ padding: '15px', background: 'white', border: '1px solid var(--primary-light)', color: 'var(--primary-color)', borderRadius: '15px', boxShadow: 'var(--shadow-sm)' }}>
                   <Zap size={24} />
                 </div>
                 <div>
-                  <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900' }}>Smart Report Scanner</h4>
-                  <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)' }}>Scan images or upload digital PDF reports</p>
+                  <h4 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900' }}>{t.smartScanner}</h4>
+                  <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-muted)' }}>{t.smartScannerDesc}</p>
                 </div>
               </div>
 
@@ -310,12 +310,12 @@ function SoilReportAdvisor() {
                         <>
                           <div style={{ width: '60px', height: '60px', border: '4px solid var(--primary-light)', borderTopColor: 'var(--primary-color)', borderRadius: '50%', animation: 'rotate 1s linear infinite' }} />
                           <span style={{ marginTop: '15px', fontWeight: '800', fontSize: '1.2rem', color: 'var(--primary-color)' }}>{scanProgress}%</span>
-                          <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Analyzing text...</span>
+                          <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{t.analyzing}</span>
                         </>
                       ) : (
                         <>
                            <Loader2 size={40} className="text-primary" style={{ animation: 'rotate 1s linear infinite' }} />
-                           <span style={{ marginTop: '15px', fontWeight: '700' }}>Processing...</span>
+                           <span style={{ marginTop: '15px', fontWeight: '700' }}>{t.thinking}</span>
                         </>
                       )}
                     </div>
@@ -324,7 +324,7 @@ function SoilReportAdvisor() {
                        <div style={{ width: '60px', height: '60px', background: 'var(--primary-light)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-color)' }}>
                         <CheckCircle2 size={32} />
                       </div>
-                      <span style={{ fontWeight: '800', color: 'var(--primary-color)', fontSize: '1.1rem' }}>Data Integrated!</span>
+                      <span style={{ fontWeight: '800', color: 'var(--primary-color)', fontSize: '1.1rem' }}>{t.dataIntegrated}</span>
                     </div>
                   ) : (
                     <>
@@ -334,8 +334,8 @@ function SoilReportAdvisor() {
                           <Camera size={12} />
                         </motion.div>
                       </div>
-                      <div style={{ fontWeight: '800', fontSize: '1.1rem', marginBottom: '5px' }}>Upload Report</div>
-                      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>PDF, JPG, or PNG (Lab photos)</div>
+                      <div style={{ fontWeight: '800', fontSize: '1.1rem', marginBottom: '5px' }}>{t.uploadReport}</div>
+                      <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{t.uploadDesc}</div>
                     </>
                   )}
                 </div>
@@ -349,7 +349,7 @@ function SoilReportAdvisor() {
                     <img src={imagePreview} alt="Soil Report Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.5))', display: 'flex', alignItems: 'flex-end', padding: '15px' }}>
                       <span style={{ color: 'white', fontSize: '12px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <ImageIcon size={14} /> SCANNING PREVIEW
+                        <ImageIcon size={14} /> {t.scanningPreview}
                       </span>
                     </div>
                     {isUploading && (
@@ -417,7 +417,7 @@ function SoilReportAdvisor() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Soil pH</label>
+                  <label>{t.pHLevel}</label>
                   <input 
                     type="number" 
                     name="pH" 
@@ -432,24 +432,24 @@ function SoilReportAdvisor() {
               </div>
 
               <div className="form-group">
-                <label>Soil Type *</label>
+                <label>{t.soilType} *</label>
                 <select name="soilType" value={formData.soilType} onChange={handleChange} required>
-                  <option value="">Select Soil Type</option>
-                  <option value="black">Black Soil</option>
-                  <option value="clay">Clay Soil</option>
-                  <option value="loamy">Loamy Soil</option>
-                  <option value="sandy">Sandy Soil</option>
-                  <option value="sandy loam">Sandy Loam</option>
+                  <option value="">{t.selectSoilType}</option>
+                  <option value="black">{t.blackSoil}</option>
+                  <option value="clay">{t.claySoil}</option>
+                  <option value="loamy">{t.loamySoil}</option>
+                  <option value="sandy">{t.sandy}</option>
+                  <option value="sandy loam">{t.sandyLoam}</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Water Availability *</label>
+                <label>{t.waterAvailability} *</label>
                 <select name="waterAvailability" value={formData.waterAvailability} onChange={handleChange} required>
-                  <option value="">Select Availability</option>
-                  <option value="low">Low (Limited)</option>
-                  <option value="moderate">Moderate (Good)</option>
-                  <option value="high">High (Abundant)</option>
+                  <option value="">{t.selectAvailability}</option>
+                  <option value="low">{t.lowMinimal}</option>
+                  <option value="moderate">{t.moderateRegular}</option>
+                  <option value="high">{t.highPermanent}</option>
                 </select>
               </div>
 
@@ -472,14 +472,14 @@ function SoilReportAdvisor() {
                   <div className="sticker-header" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <Sprout size={24} />
-                      <span>LATEST RECOMMENDATIONS</span>
+                      <span style={{ textTransform: 'uppercase' }}>{t.latestRecommendations}</span>
                     </div>
                     <button 
                       className="btn btn-secondary" 
                       style={{ width: 'auto', margin: 0, padding: '8px 20px', fontSize: '14px', borderRadius: '30px' }}
                       onClick={() => setResults(null)}
                     >
-                      ← {t.modifyInputs || 'Modify Parameters'}
+                      ← {t.modifyInputs}
                     </button>
                   </div>
 
@@ -499,7 +499,7 @@ function SoilReportAdvisor() {
                           <ShieldCheck size={28} />
                         </div>
                         <div>
-                          <div style={{ fontSize: '13px', color: 'var(--primary-dark)', fontWeight: '800', textTransform: 'uppercase' }}>Soil Health Status</div>
+                          <div style={{ fontSize: '13px', color: 'var(--primary-dark)', fontWeight: '800', textTransform: 'uppercase' }}>{t.inferredSoilHealth}</div>
                           <div style={{ fontSize: '1.8rem', fontWeight: '900', color: 'var(--primary-dark)' }}>{t[results.soilHealth.status] || results.soilHealth.status}</div>
                         </div>
                       </div>
@@ -513,22 +513,22 @@ function SoilReportAdvisor() {
                   </motion.div>
 
                   <motion.div variants={itemVariants} className="modern-card" style={{ padding: '30px' }}>
-                    <h4 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><TestTube size={20} /> Parameter Analysis</h4>
+                    <h4 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><TestTube size={20} /> {t.parameterAnalysis || 'Parameter Analysis'}</h4>
                     <div className="info-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
                       <div className="impact-card" style={{ padding: '15px' }}>
-                        <span className="label">Nitrogen</span>
+                        <span className="label">{t.soilNitrogen}</span>
                         <span className="value" style={{ color: 'hsl(199, 89%, 48%)' }}>{results.soilAnalysis.nitrogen}</span>
                       </div>
                       <div className="impact-card" style={{ padding: '15px' }}>
-                        <span className="label">Phosphorus</span>
+                        <span className="label">{t.soilPhosphorus}</span>
                         <span className="value" style={{ color: 'hsl(38, 92%, 50%)' }}>{results.soilAnalysis.phosphorus}</span>
                       </div>
                       <div className="impact-card" style={{ padding: '15px' }}>
-                        <span className="label">Potassium</span>
+                        <span className="label">{t.soilPotassium}</span>
                         <span className="value" style={{ color: 'hsl(280, 60%, 60%)' }}>{results.soilAnalysis.potassium}</span>
                       </div>
                       <div className="impact-card" style={{ padding: '15px' }}>
-                        <span className="label">pH Level</span>
+                        <span className="label">pH</span>
                         <span className="value" style={{ color: 'var(--primary-color)' }}>{results.soilAnalysis.pH}</span>
                       </div>
                     </div>
@@ -541,29 +541,29 @@ function SoilReportAdvisor() {
                           <span style={{ fontSize: '3rem' }}>{rec.cropName.includes('Bajra') || rec.cropName.includes('cropBajra') ? '🌾' : (rec.cropName.includes('Wheat') ? '🍞' : '🌱')}</span>
                           <h3>{t[rec.cropName] || rec.cropName}</h3>
                         </div>
-                        <div className="match-score">MATCH: {rec.matchScore}%</div>
+                        <div className="match-score">{t.matchLabel}: {rec.matchScore}%</div>
                       </div>
 
                       <div className="impact-grid">
                         <div className="impact-card">
                           <div className="icon">💰</div>
                           <span className="value">₹{rec.impact.fertilizerSavings || rec.impact.costSavings}</span>
-                          <span className="label">Total Savings</span>
+                          <span className="label">{t.savings || 'Total Savings'}</span>
                         </div>
                         <div className="impact-card">
                           <div className="icon">📈</div>
                           <span className="value">+{rec.impact.expectedYieldImprovement}%</span>
-                          <span className="label">Yield Boost</span>
+                          <span className="label">{t.estimatedYieldLabel || 'Yield Boost'}</span>
                         </div>
                         <div className="impact-card">
                           <div className="icon">🌿</div>
-                          <span className="value">{rec.matchScore > 80 ? 'Optimal' : 'Good'}</span>
-                          <span className="label">Soil Recovery</span>
+                          <span className="value">{rec.matchScore > 80 ? (t.optimal || 'Optimal') : (t.good || 'Good')}</span>
+                          <span className="label">{t.soilRecovery || 'Soil Recovery'}</span>
                         </div>
                       </div>
 
                       <div style={{ marginBottom: '30px', padding: '20px', background: 'var(--light-color)', borderRadius: '16px' }}>
-                        <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px' }}><Lightbulb size={18} className="text-primary" /> Logic Applied</h4>
+                        <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px' }}><Lightbulb size={18} className="text-primary" /> {t.logicApplied || 'Logic Applied'}</h4>
                         <ul style={{ paddingLeft: '20px', margin: 0 }}>
                           {rec.reasoning.map((reason, idx) => (
                             <li key={idx} style={{ marginBottom: '8px', fontSize: '15px' }}>{t[reason] || reason}</li>
@@ -572,25 +572,25 @@ function SoilReportAdvisor() {
                       </div>
 
                       <div style={{ marginTop: '30px' }}>
-                        <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}><TrendingUp size={20} /> Optimization Plan</h4>
+                        <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}><TrendingUp size={20} /> {t.optimizationPlan}</h4>
                         <div className="npk-visual-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '15px' }}>
-                          {renderProgressBar(rec.npkRequirements.nitrogen.required, rec.npkRequirements.nitrogen.deficit, "Nitrogen (N)", "hsl(199, 89%, 48%)")}
-                          {renderProgressBar(rec.npkRequirements.phosphorus.required, rec.npkRequirements.phosphorus.deficit, "Phosphorus (P)", "hsl(38, 92%, 50%)")}
-                          {renderProgressBar(rec.npkRequirements.potassium.required, rec.npkRequirements.potassium.deficit, "Potassium (K)", "hsl(280, 60%, 60%)")}
+                          {renderProgressBar(rec.npkRequirements.nitrogen.required, rec.npkRequirements.nitrogen.deficit, `${t.soilNitrogen} (N)`, "hsl(199, 89%, 48%)")}
+                          {renderProgressBar(rec.npkRequirements.phosphorus.required, rec.npkRequirements.phosphorus.deficit, `${t.soilPhosphorus} (P)`, "hsl(38, 92%, 50%)")}
+                          {renderProgressBar(rec.npkRequirements.potassium.required, rec.npkRequirements.potassium.deficit, `${t.soilPotassium} (K)`, "hsl(280, 60%, 60%)")}
                         </div>
                       </div>
 
                       <div style={{ marginTop: '30px', padding: '25px', background: 'var(--dark-color)', color: 'white', borderRadius: '20px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                          <h4 style={{ margin: 0 }}>Fertilizer Schedule</h4>
-                          <div style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--primary-color)' }}>₹{rec.fertilizerPlan.totalCost.toFixed(0)} <small style={{ fontSize: '12px', opacity: 0.6 }}>/ total</small></div>
+                          <h4 style={{ margin: 0 }}>{t.fertilizerSchedule || 'Fertilizer Schedule'}</h4>
+                          <div style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--primary-color)' }}>₹{rec.fertilizerPlan.totalCost.toFixed(0)} <small style={{ fontSize: '12px', opacity: 0.6 }}>/ {t.total || 'total'}</small></div>
                         </div>
                         <div style={{ display: 'grid', gap: '12px' }}>
                           {rec.fertilizerPlan.recommendations.map((fRec, idx) => (
                             <div key={idx} style={{ background: 'rgba(255,255,255,0.05)', padding: '15px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <div>
                                 <div style={{ fontWeight: '700' }}>{fRec.name}</div>
-                                <div style={{ fontSize: '13px', opacity: 0.6 }}>{fRec.bags} bags • {t[fRec.timing] || fRec.timing}</div>
+                                <div style={{ fontSize: '13px', opacity: 0.6 }}>{fRec.bags} {t.bags || 'bags'} • {t[fRec.timing] || fRec.timing}</div>
                               </div>
                               <div style={{ fontWeight: '800' }}>₹{fRec.cost.toFixed(0)}</div>
                             </div>
@@ -598,7 +598,7 @@ function SoilReportAdvisor() {
                         </div>
                         {rec.fertilizerPlan.notes && rec.fertilizerPlan.notes.length > 0 && (
                           <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', borderLeft: '4px solid var(--primary-color)' }}>
-                            <div style={{ fontWeight: '700', marginBottom: '10px', fontSize: '14px' }}>Additional Guidance:</div>
+                            <div style={{ fontWeight: '700', marginBottom: '10px', fontSize: '14px' }}>{t.additionalGuidance || 'Additional Guidance'}:</div>
                             <ul style={{ paddingLeft: '20px', margin: 0, fontSize: '13px', opacity: 0.8 }}>
                               {rec.fertilizerPlan.notes.map((note, idx) => (
                                 <li key={idx} style={{ marginBottom: '5px' }}>{t[note] || note}</li>
@@ -615,9 +615,9 @@ function SoilReportAdvisor() {
                     <div style={{ padding: '25px', background: 'hsl(210, 20%, 96%)', borderRadius: '24px', border: '1px solid var(--primary-light)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                         <Building2 size={24} className="text-secondary" style={{ color: 'var(--secondary-color)' }} />
-                        <h4 style={{ margin: 0 }}>Soil Testing Labs</h4>
+                        <h4 style={{ margin: 0 }}>{t.soilLabsTitle}</h4>
                       </div>
-                      <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '15px' }}>Visit your nearest KVK center for precise laboratory analysis.</p>
+                      <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '15px' }}>{t.soilLabsDesc}</p>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: '700' }}>
                         <Phone size={14} /> 1800-180-1551 (Kisan Call)
                       </div>
@@ -625,9 +625,9 @@ function SoilReportAdvisor() {
                     <div style={{ padding: '25px', background: 'hsl(38, 92%, 96%)', borderRadius: '24px', border: '1px solid var(--warning-color)' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                         <Landmark size={24} style={{ color: 'var(--warning-color)' }} />
-                        <h4 style={{ margin: 0 }}>Govt Schemes</h4>
+                        <h4 style={{ margin: 0 }}>{t.schemesTitle}</h4>
                       </div>
-                      <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '15px' }}>Check eligibility for Soil Health Card and Fertilizer Subsidies.</p>
+                      <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '15px' }}>{t.schemesDesc}</p>
                       <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--warning-color)' }}>Learn more at pmkisan.gov.in</div>
                     </div>
                   </div>

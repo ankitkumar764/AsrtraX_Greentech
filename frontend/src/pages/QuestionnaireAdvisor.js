@@ -87,7 +87,7 @@ function QuestionnaireAdvisor() {
         <div className="page-header" style={{ marginBottom: '60px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'var(--primary-light)', color: 'var(--primary-color)', padding: '8px 20px', borderRadius: '40px', marginBottom: '20px' }}>
             <HelpCircle size={18} />
-            <span style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase' }}>Quick Smart Assessment</span>
+            <span style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase' }}>{t.quickAssessment || 'Quick Smart Assessment'}</span>
           </div>
           <h1 style={{ fontSize: '3.5rem', fontWeight: '900', color: 'var(--dark-color)' }}>{t.questionnaireTitle}</h1>
           <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto' }}>{t.questionnaireDesc}</p>
@@ -96,23 +96,23 @@ function QuestionnaireAdvisor() {
         <div className={`advisor-grid ${results ? 'has-results' : ''}`}>
           <div className={`form-section ${results ? 'hidden' : ''}`}>
             <form onSubmit={handleSubmit} className="advisor-form">
-              <h3 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><Info className="text-primary" /> Basic Information</h3>
+              <h3 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><Info className="text-primary" /> {t.basicInfo || 'Basic Information'}</h3>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="form-group">
                   <label>{t.soilType} *</label>
                   <select name="soilType" value={formData.soilType} onChange={handleChange} required>
-                    <option value="">Select</option>
+                    <option value="">{t.select || 'Select'}</option>
                     <option value="black">{t.blackSoil}</option>
-                    <option value="clay">{t.clay}</option>
-                    <option value="loamy">{t.loamy}</option>
+                    <option value="clay">{t.claySoil || t.clay}</option>
+                    <option value="loamy">{t.loamySoil || t.loamy}</option>
                     <option value="sandy">{t.sandy}</option>
                   </select>
                 </div>
                 <div className="form-group">
                   <label>{t.season} *</label>
                   <select name="season" value={formData.season} onChange={handleChange} required>
-                    <option value="">Select</option>
+                    <option value="">{t.select || 'Select'}</option>
                     <option value="kharif">{t.kharifMonsoon}</option>
                     <option value="rabi">{t.rabiWinter}</option>
                   </select>
@@ -122,7 +122,7 @@ function QuestionnaireAdvisor() {
               <div className="form-group">
                 <label>{t.waterAvailability} *</label>
                 <select name="waterAvailability" value={formData.waterAvailability} onChange={handleChange} required>
-                  <option value="">Select Availability</option>
+                  <option value="">{t.selectAvailability}</option>
                   <option value="low">{t.lowRainfed}</option>
                   <option value="moderate">{t.moderateSeasonal}</option>
                   <option value="high">{t.highPermanent}</option>
@@ -132,7 +132,7 @@ function QuestionnaireAdvisor() {
               <div className="form-group">
                 <label>{t.previousCrop}</label>
                 <select name="previousCrop" value={formData.previousCrop} onChange={handleChange}>
-                  <option value="">Select Previous Crop</option>
+                  <option value="">{t.selectPreviousCrop}</option>
                   <option value="rice">{t.rice}</option>
                   <option value="wheat">{t.wheat}</option>
                   <option value="maize">{t.maize}</option>
@@ -142,12 +142,12 @@ function QuestionnaireAdvisor() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="form-group">
-                  <label>Land Area (Hectares) *</label>
+                  <label>{t.landArea || 'Land Area (Hectares)'} *</label>
                   <input type="number" name="landArea" value={formData.landArea} onChange={handleChange} required min="0.1" step="0.1" />
                 </div>
                 <div className="form-group">
                   <label>{t.budget} (₹)</label>
-                  <input type="number" name="budget" value={formData.budget} onChange={handleChange} placeholder="Optional" min="0" />
+                  <input type="number" name="budget" value={formData.budget} onChange={handleChange} placeholder={t.optional} min="0" />
                 </div>
               </div>
 
@@ -175,14 +175,14 @@ function QuestionnaireAdvisor() {
                   <div className="sticker-header" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <Sparkles size={24} />
-                      <span>SMART RECOMMENDATIONS</span>
+                      <span style={{ textTransform: 'uppercase' }}>{t.latestRecommendations}</span>
                     </div>
                     <button 
                       className="btn btn-secondary" 
                       style={{ width: 'auto', margin: 0, padding: '8px 20px', fontSize: '14px', borderRadius: '30px' }}
                       onClick={() => setResults(null)}
                     >
-                      ← {t.modifyInputs || 'Modify Parameters'}
+                      ← {t.modifyInputs}
                     </button>
                   </div>
 
@@ -202,7 +202,7 @@ function QuestionnaireAdvisor() {
                           <ShieldCheck size={28} />
                         </div>
                         <div>
-                          <div style={{ fontSize: '13px', color: 'var(--primary-dark)', fontWeight: '800', textTransform: 'uppercase' }}>Inferred Soil Health</div>
+                          <div style={{ fontSize: '13px', color: 'var(--primary-dark)', fontWeight: '800', textTransform: 'uppercase' }}>{t.inferredSoilHealth}</div>
                           <div style={{ fontSize: '1.8rem', fontWeight: '900', color: 'var(--primary-dark)' }}>{t[results.soilHealth?.status] || results.soilHealth?.status}</div>
                         </div>
                       </div>
@@ -222,24 +222,24 @@ function QuestionnaireAdvisor() {
                           <span style={{ fontSize: '3rem' }}>{rec.cropName.includes('Bajra') || rec.cropName.includes('cropBajra') ? '🌾' : (rec.cropName.includes('Wheat') ? '🍞' : '🌱')}</span>
                           <h3>{t[rec.cropName] || rec.cropName}</h3>
                         </div>
-                        <div className="match-score">MATCH: {rec.matchScore}%</div>
+                        <div className="match-score">{t.matchLabel}: {rec.matchScore}%</div>
                       </div>
 
                       <div className="impact-grid">
                         <div className="impact-card">
                           <div className="icon">💰</div>
                           <span className="value">₹{rec.financials?.profit.toLocaleString()}</span>
-                          <span className="label">Est. Profit</span>
+                          <span className="label">{t.estProfit}</span>
                         </div>
                         <div className="impact-card">
                           <div className="icon">📦</div>
                           <span className="value">{rec.estimatedYield?.max} t/ha</span>
-                          <span className="label">Max Yield</span>
+                          <span className="label">{t.maxYield}</span>
                         </div>
                         <div className="impact-card">
                           <div className="icon">💳</div>
                           <span className="value">₹{rec.financials?.investment.toLocaleString()}</span>
-                          <span className="label">Investment</span>
+                          <span className="label">{t.investment}</span>
                         </div>
                       </div>
 
@@ -254,15 +254,15 @@ function QuestionnaireAdvisor() {
 
                       <div style={{ marginTop: '30px', padding: '25px', background: 'var(--dark-color)', color: 'white', borderRadius: '20px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                          <h4 style={{ margin: 0 }}>Optimization Plan</h4>
-                          <div style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--primary-color)' }}>₹{rec.fertilizerPlan.totalCost.toFixed(0)} <small style={{ fontSize: '12px', opacity: 0.6 }}>/ fertilizer</small></div>
+                          <h4 style={{ margin: 0 }}>{t.optimizationPlan}</h4>
+                          <div style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--primary-color)' }}>₹{rec.fertilizerPlan.totalCost.toFixed(0)} <small style={{ fontSize: '12px', opacity: 0.6 }}>/ {t.fertilizer || 'fertilizer'}</small></div>
                         </div>
                         <div style={{ display: 'grid', gap: '12px' }}>
                           {rec.fertilizerPlan.recommendations.map((fRec, idx) => (
                             <div key={idx} style={{ background: 'rgba(255,255,255,0.05)', padding: '15px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <div>
                                 <div style={{ fontWeight: '700' }}>{fRec.name}</div>
-                                <div style={{ fontSize: '13px', opacity: 0.6 }}>{fRec.bags} bags • {t[fRec.timing] || fRec.timing}</div>
+                                <div style={{ fontSize: '13px', opacity: 0.6 }}>{fRec.bags} {t.bags || 'bags'} • {t[fRec.timing] || fRec.timing}</div>
                               </div>
                               <div style={{ fontWeight: '800' }}>₹{fRec.cost.toFixed(0)}</div>
                             </div>
@@ -272,7 +272,7 @@ function QuestionnaireAdvisor() {
                       
                       {rec.costOptimization && rec.costOptimization.length > 0 && (
                         <div style={{ marginTop: '30px', padding: '20px', background: 'hsl(210, 20%, 96%)', borderRadius: '16px' }}>
-                          <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px' }}><TrendingUp size={18} className="text-secondary" /> Profit Strategy</h4>
+                          <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px' }}><TrendingUp size={18} className="text-secondary" /> {t.profitStrategy}</h4>
                           <ul style={{ paddingLeft: '20px', margin: 0 }}>
                             {rec.costOptimization.slice(0, 3).map((tip, idx) => (
                               <li key={idx} style={{ marginBottom: '8px', fontSize: '14px', color: 'var(--text-muted)' }}>{t[tip] || tip}</li>
@@ -284,12 +284,12 @@ function QuestionnaireAdvisor() {
                   ))}
                   
                   <div className="placeholder" style={{ marginTop: '40px', padding: '30px', background: 'var(--primary-light)', borderRadius: '24px', textAlign: 'left', border: '1px dashed var(--primary-color)' }}>
-                    <h4 style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--primary-dark)', marginBottom: '15px' }}><Info size={20} /> Professional Tip</h4>
+                    <h4 style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--primary-dark)', marginBottom: '15px' }}><Info size={20} /> {t.proTip}</h4>
                     <p style={{ margin: 0, color: 'var(--primary-dark)', opacity: 0.8, fontSize: '15px' }}>
-                      While this assessment uses advanced agricultural logic, a laboratory soil test is always the most accurate way to manage your farm's health.
+                      {t.professionalTipDesc}
                     </p>
                     <button className="btn btn-primary" style={{ marginTop: '20px', padding: '10px 25px' }} onClick={() => window.location.href = '/soil-report'}>
-                      Get Soil Report Advisor <ArrowRight size={16} />
+                      {t.getSoilReportAdvisor} <ArrowRight size={16} />
                     </button>
                   </div>
                 </motion.div>
@@ -300,7 +300,7 @@ function QuestionnaireAdvisor() {
                   <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ repeat: Infinity, duration: 4 }}>
                     <HelpCircle size={80} style={{ opacity: 0.1, marginBottom: '20px' }} />
                   </motion.div>
-                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>{t.enterSoilTestResults || 'Complete the assessment to see recommendations'}</p>
+                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>{t.answerQuestionsPlaceholder || t.answerQuestionsText}</p>
                 </div>
               )}
             </AnimatePresence>

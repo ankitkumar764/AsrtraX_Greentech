@@ -93,48 +93,48 @@ function ProfitAnalysis() {
         <div className="page-header" style={{ marginBottom: '60px' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'var(--primary-light)', color: 'var(--primary-color)', padding: '8px 20px', borderRadius: '40px', marginBottom: '20px' }}>
             <Calculator size={18} />
-            <span style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase' }}>Financial Yield Engine</span>
+            <span style={{ fontSize: '14px', fontWeight: '800', textTransform: 'uppercase' }}>{t.financialYieldEngine || 'Financial Yield Engine'}</span>
           </div>
-          <h1 style={{ fontSize: '3.5rem', fontWeight: '900', color: 'var(--dark-color)' }}>Crop Profit Analysis</h1>
-          <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto' }}>Estimate costs, yields, and potential ROI based on real-time soil and budget constraints.</p>
+          <h1 style={{ fontSize: '3.5rem', fontWeight: '900', color: 'var(--dark-color)' }}>{t.profitAnalysisTitle}</h1>
+          <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto' }}>{t.profitAnalysisDesc}</p>
         </div>
 
         <div className={`advisor-grid ${results ? 'has-results' : ''}`}>
           <div className={`form-section ${results ? 'hidden' : ''}`}>
             <form onSubmit={handleSubmit} className="advisor-form">
-              <h3 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><Wallet className="text-primary" /> Budget & Scale</h3>
+              <h3 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><Wallet className="text-primary" /> {t.budgetScale || 'Budget & Scale'}</h3>
               
               <div className="form-group">
-                <label>Total Budget (₹) *</label>
+                <label>{t.totalBudget || 'Total Budget (₹)'} *</label>
                 <input type="number" name="budget" value={formData.budget} onChange={handleChange} required min="1000" placeholder="e.g. 50000" />
               </div>
               <div className="form-group">
-                <label>Land Size (Acres) *</label>
+                <label>{t.landSize || 'Land Size (Acres)'} *</label>
                 <input type="number" name="landSize" value={formData.landSize} onChange={handleChange} required min="0.1" step="0.1" placeholder="e.g. 2.5" />
               </div>
 
-              <h4 style={{ margin: '20px 0 15px 0', fontSize: '14px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Environmental Factors</h4>
+              <h4 style={{ margin: '20px 0 15px 0', fontSize: '14px', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t.environmentalFactors || 'Environmental Factors'}</h4>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                 <div className="form-group">
-                  <label>Season *</label>
+                  <label>{t.season || 'Season'} *</label>
                   <select name="season" value={formData.season} onChange={handleChange} required>
-                    <option value="">Select</option>
-                    <option value="kharif">Kharif</option>
-                    <option value="rabi">Rabi</option>
+                    <option value="">{t.select || 'Select'}</option>
+                    <option value="kharif">{t.kharifMonsoon}</option>
+                    <option value="rabi">{t.rabiWinter}</option>
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>Water *</label>
+                  <label>{t.waterAvailability || 'Water'} *</label>
                   <select name="waterAvailability" value={formData.waterAvailability} onChange={handleChange} required>
-                    <option value="">Select</option>
-                    <option value="low">Low</option>
-                    <option value="high">High</option>
+                    <option value="">{t.select || 'Select'}</option>
+                    <option value="low">{t.lowRainfed}</option>
+                    <option value="high">{t.highPermanent}</option>
                   </select>
                 </div>
               </div>
 
               <button type="submit" className="btn btn-premium btn-large" disabled={loading} style={{ marginTop: '20px' }}>
-                {loading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}><LineChart /></motion.div> : 'Calculate Profitability'}
+                {loading ? <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}><LineChart /></motion.div> : (t.calculateProfitability || 'Calculate Profitability')}
               </button>
             </form>
           </div>
@@ -152,14 +152,14 @@ function ProfitAnalysis() {
                   <div className="sticker-header" style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <TrendingUp size={24} />
-                      <span>FINANCIAL PROJECTIONS</span>
+                      <span>{t.financialProjections || 'FINANCIAL PROJECTIONS'}</span>
                     </div>
                     <button 
                       className="btn btn-secondary" 
                       style={{ width: 'auto', margin: 0, padding: '8px 20px', fontSize: '14px', borderRadius: '30px' }}
                       onClick={() => setResults(null)}
                     >
-                      ← {t.modifyInputs || 'Modify Parameters'}
+                      ← {t.modifyInputs}
                     </button>
                   </div>
 
@@ -170,15 +170,15 @@ function ProfitAnalysis() {
                         <div style={{ width: '40px', height: '40px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-color)' }}>
                           <Sparkles size={22} />
                         </div>
-                        <h4 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--primary-dark)' }}>Best Crop Pick: {results.insights.bestCrop}</h4>
+                        <h4 style={{ margin: 0, fontSize: '1.4rem', color: 'var(--primary-dark)' }}>{t.bestCropPick || 'Best Crop Pick'}: {t[results.insights.bestCrop] || results.insights.bestCrop}</h4>
                       </div>
-                      <p style={{ color: 'var(--primary-dark)', opacity: 0.8, lineHeight: '1.6', fontSize: '1.1rem' }}>{results.insights.overview}</p>
+                      <p style={{ color: 'var(--primary-dark)', opacity: 0.8, lineHeight: '1.6', fontSize: '1.1rem' }}>{t[results.insights.overview] || results.insights.overview}</p>
                     </motion.div>
                   )}
 
                   {/* Profit Chart */}
                   <motion.div variants={itemVariants} className="modern-card" style={{ padding: '30px', marginBottom: '30px' }}>
-                    <h4 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><BarChart3 size={20} /> Revenue vs Cost Projections</h4>
+                    <h4 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><BarChart3 size={20} /> {t.revenueVsCost || 'Revenue vs Cost Projections'}</h4>
                     <div style={{ width: '100%', height: 350 }}>
                       <ResponsiveContainer>
                         <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
@@ -190,8 +190,8 @@ function ProfitAnalysis() {
                             formatter={(value) => `₹${value.toLocaleString()}`} 
                           />
                           <Legend verticalAlign="top" height={36}/>
-                          <Bar dataKey="Cost" fill="hsl(0, 72%, 60%)" radius={[6, 6, 0, 0]} />
-                          <Bar dataKey="Profit" fill="var(--primary-color)" radius={[6, 6, 0, 0]} />
+                          <Bar name={t.cost} dataKey="Cost" fill="hsl(0, 72%, 60%)" radius={[6, 6, 0, 0]} />
+                          <Bar name={t.profit} dataKey="Profit" fill="var(--primary-color)" radius={[6, 6, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -210,18 +210,18 @@ function ProfitAnalysis() {
 
                         <div className="impact-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '15px', margin: '0 0 20px 0' }}>
                           <div className="impact-card" style={{ padding: '15px' }}>
-                            <span className="label">Investment</span>
+                            <span className="label">{t.investment}</span>
                             <span className="value" style={{ fontSize: '1.2rem' }}>₹{item.totalCost.toLocaleString()}</span>
                           </div>
                           <div className="impact-card" style={{ padding: '15px' }}>
-                            <span className="label">Net Profit</span>
+                            <span className="label">{t.netProfit}</span>
                             <span className="value" style={{ fontSize: '1.2rem', color: 'var(--primary-color)' }}>₹{item.expectedProfit.toLocaleString()}</span>
                           </div>
                         </div>
 
                         <div style={{ padding: '15px', background: 'var(--light-color)', borderRadius: '12px', fontSize: '14px' }}>
-                          <strong>Risk Profile: {item.risk.level}</strong>
-                          <p style={{ margin: '5px 0 0 0', opacity: 0.7 }}>{item.risk.reasons[0]}</p>
+                          <strong>{t.riskProfile || 'Risk Profile'}: {t[item.risk.level] || item.risk.level}</strong>
+                          <p style={{ margin: '5px 0 0 0', opacity: 0.7 }}>{t[item.risk.reasons[0]] || item.risk.reasons[0]}</p>
                         </div>
                       </motion.div>
                     ))}
@@ -229,16 +229,16 @@ function ProfitAnalysis() {
 
                   {/* Cost Table */}
                   <motion.div variants={itemVariants} className="modern-card" style={{ padding: '30px' }}>
-                    <h4 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><LayoutGrid size={20} /> Detailed Cost Breakdown</h4>
+                    <h4 style={{ marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}><LayoutGrid size={20} /> {t.detailedCostBreakdown || 'Detailed Cost Breakdown'}</h4>
                     <div style={{ overflowX: 'auto' }}>
                       <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                         <thead>
                           <tr style={{ borderBottom: '2px solid var(--light-color)' }}>
-                            <th style={{ padding: '15px' }}>Crop</th>
-                            <th style={{ padding: '15px' }}>Seeds</th>
-                            <th style={{ padding: '15px' }}>Fertilizers</th>
-                            <th style={{ padding: '15px' }}>Labor</th>
-                            <th style={{ padding: '15px', fontWeight: '800' }}>Total Cost</th>
+                            <th style={{ padding: '15px' }}>{t.cropLabel || 'Crop'}</th>
+                            <th style={{ padding: '15px' }}>{t.seeds || 'Seeds'}</th>
+                            <th style={{ padding: '15px' }}>{t.fertilizers || 'Fertilizers'}</th>
+                            <th style={{ padding: '15px' }}>{t.labor || 'Labor'}</th>
+                            <th style={{ padding: '15px', fontWeight: '800' }}>{t.totalCost || 'Total Cost'}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -264,7 +264,7 @@ function ProfitAnalysis() {
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 4 }}>
                     <Calculator size={80} style={{ opacity: 0.1, marginBottom: '20px' }} />
                   </motion.div>
-                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>Enter your budget and farm details to reveal actionable financial insights.</p>
+                  <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>{t.profitAnalysisPlaceholder || 'Enter your budget and farm details to reveal actionable financial insights.'}</p>
                 </div>
               )}
             </AnimatePresence>
