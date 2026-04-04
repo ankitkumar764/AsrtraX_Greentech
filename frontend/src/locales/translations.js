@@ -346,6 +346,9 @@ const translations = {
     language: "भाषा",
     english: "English",
     hindi: "हिंदी",
+    gujarati: "ગુજરાતી",
+    navProfitAnalysis: "लाभ विश्लेषण",
+    navVoiceAssistant: "आवाज़ सहायक",
 
     // Home Page
     homeWelcome: "कृषि साथी एआई में आपका स्वागत है",
@@ -639,6 +642,31 @@ const translations = {
     answerQuestionsPlaceholder: "व्यक्तिगत फसल और उर्वरक सिफारिशें प्राप्त करने के लिए प्रश्नों के उत्तर दें",
     modifyInputs: "सेटिंग्स बदलें / पीछे जाएँ",
 
+    // Profit Analysis
+    profitAnalysisTitle: "💰 फसल लाभ विश्लेषण",
+    profitAnalysisDesc: "अपनी फसल से अधिकतम लाभ की गणना करें",
+
+    // Voice Assistant
+    voiceAssistantTitle: "🎤 स्मार्ट किसान आवाज़ सहायक",
+    voiceAssistantDesc: "हिंगलिश या अंग्रेज़ी में खेती के बारे में कुछ भी पूछें!",
+    tapToSpeak: "बोलने के लिए दबाएं",
+    listening: "सुन रहे हैं...",
+    thinking: "सोच रहे हैं...",
+    youSaid: "आपने कहा:",
+    assistantSays: "सहायक:",
+    replayAudio: "🔊 दोबारा सुनें",
+    sendButton: "भेजें",
+    typeQuestion: "सवाल टाइप करें या माइक इस्तेमाल करें...",
+
+    // Soil Upload
+    uploadReport: "रिपोर्ट अपलोड करें",
+    uploadDesc: "PDF, JPG, या PNG (लैब फोटो)",
+    aiPowered: "AI POWERED",
+    smartScanner: "स्मार्ट रिपोर्ट स्कैनर",
+    smartScannerDesc: "छवियां स्कैन करें या डिजिटल PDF रिपोर्ट अपलोड करें",
+    dataIntegrated: "डेटा एकीकृत!",
+    scanningPreview: "स्कैनिंग प्रीव्यू",
+
     // नए डायनामिक टेक्स्ट (New Keys for Dynamic Results)
     SOIL_HEALTH_GOOD: "अच्छा",
     SOIL_HEALTH_MEDIUM: "सामान्य",
@@ -666,9 +694,11 @@ const translations = {
 
     // अनुकूलन (Optimization)
     OPTIMIZE_BAJRA: "जैविक खाद का उपयोग करने पर नाइट्रोजन में 10% की कटौती करें।",
-    OPTIMIZE_WHEAT: "जड़ों के अच्छे विकास के लिए पहली सिंचाई के दौरान फॉस्फोरस डालें।",
+    OPTIMIZE_WHEAT: "जड़ों के अच्छे विकास के लिए पहली सिंचाई के दौरान फॉस्फोरस डालें।",
 
     // Footer
+    footerCopyright: "© 2024 कृषि साथी एआई - किसानों को स्मार्ट समाधान से सशक्त बनाना",
+    footerContact: "अधिक जानकारी के लिए, अपने स्थानीय कृषि अधिकारी से संपर्क करें",
   },
   gu: {
     // Header & Navigation
@@ -683,6 +713,8 @@ const translations = {
     english: "English",
     hindi: "हिंदी",
     gujarati: "ગુજરાતી",
+    navProfitAnalysis: "નફો વિશ્લેષણ",
+    navVoiceAssistant: "અવાજ સહાયક",
 
     // Home Page
     homeWelcome: "કૃષિ સાથી AIમાં તમાગે આવકાર છે",
@@ -993,6 +1025,31 @@ const translations = {
     answerQuestionsPlaceholder: "વ્યક્તિગતકૃત પાક અને ખાતર ભલામણો મેળવવા માટે પ્રશ્નોના જવાબ આપો",
     modifyInputs: "ફેરફાર કરો / પાછા જાઓ",
 
+    // Profit Analysis
+    profitAnalysisTitle: "💰 પાક નફો વિશ્લેષણ",
+    profitAnalysisDesc: "તમારા પાકમાંથી મહત્તમ નફો ગણો",
+
+    // Voice Assistant
+    voiceAssistantTitle: "🎤 સ્માર્ટ ખેડૂત અવાજ સહાયક",
+    voiceAssistantDesc: "ખેતી વિશે ગુજરાતી, હિન્દી અથવા અંગ્રેજીમાં કંઈ પણ પૂછો!",
+    tapToSpeak: "બોલવા માટે દબાવો",
+    listening: "સાંભળી રહ્યા છીએ...",
+    thinking: "વિચારી રહ્યા છીએ...",
+    youSaid: "તમે કહ્યું:",
+    assistantSays: "સહાયક:",
+    replayAudio: "🔊 ફરીથી સાંભળો",
+    sendButton: "મોકલો",
+    typeQuestion: "સવાલ ટાઇપ કરો અથવા માઇક વાપરો...",
+
+    // Soil Upload
+    uploadReport: "અહેવાલ અપલોડ કરો",
+    uploadDesc: "PDF, JPG, અથવા PNG (લેબ ફોટો)",
+    aiPowered: "AI POWERED",
+    smartScanner: "સ્માર્ટ રિપોર્ટ સ્કેનર",
+    smartScannerDesc: "છબીઓ સ્કેન કરો અથવા ડિજિટલ PDF અહેવાલ અપલોડ કરો",
+    dataIntegrated: "ડેટા એકીકૃત!",
+    scanningPreview: "સ્કેનિંગ પ્રિવ્યૂ",
+
     // નવા ડાયનામિક ટેક્સ્ટ (New Keys for Dynamic Results)
     SOIL_HEALTH_GOOD: "સારું",
     SOIL_HEALTH_MEDIUM: "સામાન્ય",
@@ -1022,7 +1079,8 @@ const translations = {
     OPTIMIZE_BAJRA: "જો જૈવિક ખાતર વાપરતા હોવ તો નાઇટ્રોજનમાં 10% ઘટાડો કરો.",
     OPTIMIZE_WHEAT: "મૂળના સારા વિકાસ માટે પ્રથમ પિયત દરમિયાન ફોસ્ફરસ આપો.",
 
-    // Footer
+    footerCopyright: "© 2024 કૃષિ સાથી AI - ખેડૂતોને સ્માર્ટ ઉકેલથી સશક્ત બનાવવું",
+    footerContact: "વધુ માહિતી માટે, તમારા સ્થાનિક કૃષિ અધિકારીનો સંપર્ક કરો",
   }
 };
 
