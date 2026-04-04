@@ -69,8 +69,8 @@ function AppContent() {
               </div>
               <div className="brand-info">
                 <h1 className="brand-name">
-                  <span className="weight-900">Krishi</span>
-                  <span className="weight-300">Saarthi</span>
+                  <span className="weight-900">{t.appTitle.split(' ')[0]}</span>
+                  <span className="weight-300">{t.appTitle.split(' ')[1]}</span>
                 </h1>
                 <p className="brand-tagline">
                   <Sparkles size={12} /> {t.tagline}
@@ -86,7 +86,7 @@ function AppContent() {
                 onClick={() => setIsLangOpen(!isLangOpen)}
               >
                 <Globe size={18} className="globe-icon-static" />
-                <span>{language === 'en' ? 'English' : (language === 'hi' ? 'हिंदी' : 'ગુજરાતી')}</span>
+                <span>{language === 'en' ? t.english : (language === 'hi' ? t.hindi : t.gujarati)}</span>
                 <ChevronDown size={14} className={`chevron-icon ${isLangOpen ? 'rotate' : ''}`} />
               </button>
 
@@ -103,21 +103,21 @@ function AppContent() {
                       className={`lang-option ${language === 'en' ? 'active' : ''}`}
                       onClick={() => { changeLanguage('en'); setIsLangOpen(false); }}
                     >
-                      <span className="lang-text">English</span>
+                      <span className="lang-text">{t.english}</span>
                       {language === 'en' && <div className="active-dot" />}
                     </button>
                     <button 
                       className={`lang-option ${language === 'hi' ? 'active' : ''}`}
                       onClick={() => { changeLanguage('hi'); setIsLangOpen(false); }}
                     >
-                      <span className="lang-text">हिंदी</span>
+                      <span className="lang-text">{t.hindi}</span>
                       {language === 'hi' && <div className="active-dot" />}
                     </button>
                     <button 
                       className={`lang-option ${language === 'gu' ? 'active' : ''}`}
                       onClick={() => { changeLanguage('gu'); setIsLangOpen(false); }}
                     >
-                      <span className="lang-text">ગુજરાતી</span>
+                      <span className="lang-text">{t.gujarati}</span>
                       {language === 'gu' && <div className="active-dot" />}
                     </button>
                   </motion.div>
@@ -140,8 +140,8 @@ function AppContent() {
             <NavLink to="/questionnaire" icon={ScrollText}>{t.navQuestionnaire}</NavLink>
             <NavLink to="/soil-labs" icon={MapPin}>{t.navSoilLabs}</NavLink>
             <NavLink to="/schemes" icon={Landmark}>{t.navSchemes}</NavLink>
-            <NavLink to="/profit-analysis" icon={LineChart}>Profit Analysis</NavLink>
-            <NavLink to="/voice-assistant" icon={Mic}>Voice Assistant</NavLink>
+            <NavLink to="/profit-analysis" icon={LineChart}>{t.navProfitAnalysis || 'Profit Analysis'}</NavLink>
+            <NavLink to="/voice-assistant" icon={Mic}>{t.navVoiceAssistant || 'Voice Assistant'}</NavLink>
           </ul>
         </div>
       </nav>
@@ -162,7 +162,7 @@ function AppContent() {
         <div className="container">
           <div className="footer-grid">
             <div className="footer-brand">
-              <h3>KrishiSaarthi AI</h3>
+              <h3>{t.appTitle}</h3>
               <p>{t.tagline}</p>
             </div>
             <div className="footer-copyright">
