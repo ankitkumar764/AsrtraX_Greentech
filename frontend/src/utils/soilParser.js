@@ -51,10 +51,15 @@ export const extractSoilData = (text) => {
 export const mapToFormData = (extractedData, currentFormData) => {
   return {
     ...currentFormData,
-    soilN: extractedData.soilN !== null ? extractedData.soilN : currentFormData.soilN,
-    soilP: extractedData.soilP !== null ? extractedData.soilP : currentFormData.soilP,
-    soilK: extractedData.soilK !== null ? extractedData.soilK : currentFormData.soilK,
-    pH: extractedData.pH !== null ? extractedData.pH : currentFormData.pH,
-    organicCarbon: extractedData.organicCarbon !== null ? extractedData.organicCarbon : currentFormData.organicCarbon
+    soilN: extractedData.nitrogen !== undefined && extractedData.nitrogen !== null ? extractedData.nitrogen : 
+           (extractedData.soilN !== undefined && extractedData.soilN !== null ? extractedData.soilN : currentFormData.soilN),
+    soilP: extractedData.phosphorus !== undefined && extractedData.phosphorus !== null ? extractedData.phosphorus : 
+           (extractedData.soilP !== undefined && extractedData.soilP !== null ? extractedData.soilP : currentFormData.soilP),
+    soilK: extractedData.potassium !== undefined && extractedData.potassium !== null ? extractedData.potassium : 
+           (extractedData.soilK !== undefined && extractedData.soilK !== null ? extractedData.soilK : currentFormData.soilK),
+    pH: extractedData.ph !== undefined && extractedData.ph !== null ? extractedData.ph : 
+        (extractedData.pH !== undefined && extractedData.pH !== null ? extractedData.pH : currentFormData.pH),
+    organicCarbon: extractedData.organicCarbon !== undefined && extractedData.organicCarbon !== null ? extractedData.organicCarbon : 
+                   currentFormData.organicCarbon
   };
 };

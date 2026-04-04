@@ -34,6 +34,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date().toISOString() });
 });
 
+
 // Base endpoint
 app.get('/', (req, res) => {
   res.json({

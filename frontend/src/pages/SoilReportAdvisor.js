@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Tesseract from 'tesseract.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { 
@@ -12,7 +11,7 @@ import {
 import { useLanguage } from '../context/LanguageContext';
 import translations from '../locales/translations';
 import api from '../services/api';
-import { extractSoilData, mapToFormData } from '../utils/soilParser';
+import { mapToFormData } from '../utils/soilParser';
 import '../styles/index.css';
 
 function SoilReportAdvisor() {
@@ -59,119 +58,113 @@ function SoilReportAdvisor() {
     setImagePreview(null);
     setScanProgress(0);
 
-    if (file.type === 'application/pdf') {
-       await handlePDFUpload(file);
-    } else if (file.type.startsWith('image/')) {
-       await handleImageScan(file);
+    const isImage = file.type.startsWith('image/');
+    const isPDF = file.type === 'application/pdf';
+
+    if (isImage) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+
+    if (isPDF || isImage) {
+       await handleReportUpload(file);
     } else {
       setError('Please upload a PDF or Image (JPG/PNG)');
     }
   };
 
-  const handlePDFUpload = async (file) => {
+  const handleReportUpload = async (file) => {
     setIsUploading(true);
+    setScanProgress(10);
     const formDataUpload = new FormData();
     formDataUpload.append('report', file);
 
     try {
+      setScanProgress(40);
       const response = await api.post('/soil/upload-report', formDataUpload, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          const pct = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setScanProgress(Math.min(pct, 80));
+        }
       });
 
-      if (response.data.success) {
-        applyExtractedData(response.data.data);
+      setScanProgress(100);
+      console.log('📦 Full backend response:', response.data);
+
+      if (response.data && response.data.success && response.data.data) {
+        applyExtractedData(response.data.data, response.data.usedAI);
       } else {
-        // Handle structured non-success response (e.g., scanned PDF)
-        const errType = response.data.errorType;
+        const errType = response.data?.errorType;
         if (errType === 'SCANNED_PDF') {
-          setError('📷 This PDF is a scanned image. Please take a photo of the report and use the Image Scanner (JPG/PNG) instead!');
+          setError('📷 Ya PDF scan hai. Image (JPG/PNG) upload karein!');
         } else {
-          setError('❌ Could not extract text from PDF. Please enter values manually or use the Image Scanner.');
+          setError('❌ Report se data extract nahi hua. Values manually bharein.');
         }
       }
     } catch (err) {
-      console.error('PDF Upload Error:', err);
-      // 422 = structured error from backend parser
+      console.error('Upload Error:', err);
       const errData = err.response?.data;
       if (errData?.errorType === 'SCANNED_PDF') {
-        setError('📷 This PDF is a scanned image. Please take a photo of the report and use the Image Scanner (JPG/PNG) instead!');
-      } else if (errData?.errorType === 'INVALID_FORMAT') {
-        setError('❌ This PDF could not be read. It may be password-protected or corrupted. Please enter values manually.');
+        setError('📷 Ya PDF scan hai. Image (JPG/PNG) upload karein!');
       } else {
-        setError('⚠️ Could not connect to backend. Make sure the server is running on port 5001.');
+        setError('⚠️ Server se connect nahi ho paya. Backend check karein.');
       }
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleImageScan = async (file) => {
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result);
-    reader.readAsDataURL(file);
-
-    setIsUploading(true);
-    try {
-      const { data: { text } } = await Tesseract.recognize(file, 'eng', {
-        logger: m => {
-          if (m.status === 'recognizing text') {
-            setScanProgress(Math.round(m.progress * 100));
-          }
-        }
-      });
-
-      console.log('📄 Raw OCR Text Captured:', text);
-
-      // Step 1: Local Regex Parsing
-      let extracted = extractSoilData(text);
-      const foundCount = Object.values(extracted).filter(v => v !== null).length;
-
-      // Step 2: Backend AI Fallback if local regex is weak (less than 3 metrics found)
-      if (foundCount < 3) {
-        console.log('🤖 Local regex found only ' + foundCount + ' metrics. Triggering AI Deep Scan...');
-        setScanProgress(99); // Show looking deep
-        try {
-          const aiResponse = await api.post('/soil/extract-from-text', { text });
-          if (aiResponse.data.success) {
-             extracted = { ...extracted, ...aiResponse.data.data };
-             applyExtractedData(extracted, true); // true for 'using AI'
-             return;
-          }
-        } catch (aiErr) {
-          console.warn('AI secondary extraction pass failed:', aiErr);
-        }
-      }
-
-      applyExtractedData(extracted);
-    } catch (err) {
-      setError('OCR failed. Please enter values manually.');
-      console.error(err);
     } finally {
       setIsUploading(false);
       setScanProgress(0);
     }
   };
 
-  const applyExtractedData = (data, wasAI = false) => {
-    // Count how many non-null values were found
-    const foundKeys = Object.keys(data).filter(key => data[key] !== null);
-    
-    if (foundKeys.length > 0) {
-      setFormData(prev => mapToFormData(data, prev));
-      setUploadSuccess(true);
-      setHighlightedFields(foundKeys);
-      
-      // If AI was used, show a special toast or message
-      if (wasAI) {
-        // You could set a specific 'AI used' state here if needed
-      }
 
+  const applyExtractedData = (data, wasAI = false) => {
+    console.log('🌱 applyExtractedData called with:', data);
+
+    // Map backend keys → frontend form keys
+    const keyMap = {
+      nitrogen:     'soilN',
+      phosphorus:   'soilP',
+      potassium:    'soilK',
+      ph:           'pH',
+      organicCarbon: 'organicCarbon',
+      // Also handle if somehow old keys come through
+      soilN: 'soilN',
+      soilP: 'soilP',
+      soilK: 'soilK',
+      pH:    'pH',
+    };
+
+    // Build new form values only for non-null extracted fields
+    const newValues = {};
+    const highlightKeys = [];
+
+    Object.keys(data).forEach(backendKey => {
+      const val = data[backendKey];
+      if (val !== null && val !== undefined) {
+        const formKey = keyMap[backendKey];
+        if (formKey) {
+          newValues[formKey] = String(val);
+          if (!highlightKeys.includes(formKey)) highlightKeys.push(formKey);
+        }
+      }
+    });
+
+    console.log('📋 Mapped form values:', newValues, '| Highlighted:', highlightKeys);
+
+    if (highlightKeys.length > 0) {
+      setFormData(prev => ({ ...prev, ...newValues }));
+      setUploadSuccess(true);
+      setHighlightedFields(highlightKeys);
+      setError(null);
+
+      // Clear highlight after 8 seconds (NOT the values!)
       setTimeout(() => {
         setUploadSuccess(false);
         setHighlightedFields([]);
-      }, 5000);
+      }, 8000);
     } else {
-      setError('Could not find any soil metrics in this document. Please enter them manually.');
+      setError('❌ Could not find any soil metrics in this document. Please enter values manually.');
     }
   };
 

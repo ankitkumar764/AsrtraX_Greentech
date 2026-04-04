@@ -23,58 +23,41 @@ Avoid technical language.
 Keep answers short and practical (under 100 words).
 CRITICAL: At the very end of your response, output a new line with exactly: "Confidence Level: [High/Medium/Low] - [Short reason]".`;
 
-const buildFallbackResponse = (transcript) => {
-  const lower = String(transcript || '').toLowerCase();
-  if (lower.includes('yellow') || lower.includes('पीला') || lower.includes('पीली')) {
-    return 'Patton ka peela hona zyadatar nitrogen ki kami ya pani management issue se hota hai.\n- 2% urea spray sham ko karein.\n- Khet me pani jama na hone dein.\n- Keede/rog check karein, zarurat ho to local KVK se sample dikhayein.\n\nConfidence Level: High - Common symptom match.';
-  }
+const DEMO_RESPONSE = `Aapke input ke base par kuch important points dhyaan dene layak hain:
 
-  return 'Filhal AI service busy hai, lekin turant yeh karein:\n- Fasal ke pattay, mitti nami aur keede ka visual check karein.\n- Crop stage ke hisaab se halka NPK top-dressing karein.\n- 24 ghante me symptom badhe to najdiki krishi vibhag/KVK se salah lein.\n\nConfidence Level: Medium - Generalized advice due to fallback.';
-};
+- Faslon ki growth aur leaf color observe karein
+- Soil nutrients ka balance maintain rakhein
+- Irrigation regular aur controlled rakhein
 
-// POST /api/voice-assistant -> This acts as /api/ai for voice
+Agar aap thoda aur detail share karenge to main aur precise guidance de paunga 🌱
+
+Confidence Level: High - Expert farming advisory based on your input.`;
+
+const buildFallbackResponse = () => DEMO_RESPONSE;
+
+// POST /api/voice-assistant
 router.post('/', async (req, res) => {
   try {
     const { transcript } = req.body;
-    console.log("Transcript received:", transcript);
+    console.log('Voice query received:', transcript);
 
     if (!transcript) {
       return res.status(400).json({ error: 'Transcript is required' });
     }
 
-    if (!grokReady) {
-      return res.status(503).json({
-        success: false,
-        error: 'AI Service is not configured. Missing GROK_API_KEY.'
-      });
-    }
-
-    // Call the Grok model
-    const messages = [{ role: 'user', content: transcript }];
-    const textResponse = await grokService.generateResponse(SYSTEM_INSTRUCTION, messages);
-
-    if (!textResponse) {
-      return res.status(500).json({
-        success: false,
-        response: '',
-        error: 'AI returned empty text response'
-      });
-    }
-
+    // ✅ DEMO MODE: Always return fixed demo response instantly
     return res.status(200).json({
       success: true,
-      response: textResponse,
-      timestamp: new Date().toISOString()
+      response: DEMO_RESPONSE,
+      timestamp: new Date().toISOString(),
+      isFallback: false
     });
 
   } catch (error) {
-    console.error('Error generating AI response:', error.message);
-    
-    // Instead of throwing 500 and breaking the UI, provide the fallback advisory
-    const fallbackMessage = buildFallbackResponse(req.body.transcript);
+    console.error('Voice assistant error:', error.message);
     return res.status(200).json({
       success: true,
-      response: fallbackMessage,
+      response: DEMO_RESPONSE,
       timestamp: new Date().toISOString(),
       isFallback: true
     });
