@@ -19,6 +19,7 @@ const schemesRoute = require('./routes/schemes');
 const voiceAssistantRoute = require('./routes/voiceAssistant');
 const profitAnalysisRoute = require('./routes/profitAnalysis');
 const soilRoute = require('./routes/soil');
+const weatherRoute = require('./routes/weather');
 
 // Use routes
 app.use('/api/recommendations', recommendationRoute);
@@ -28,6 +29,7 @@ app.use('/api/voice-assistant', voiceAssistantRoute);
 app.use('/api/ai', voiceAssistantRoute); // Alias for voice-assistant as requested
 app.use('/api/profit-analysis', profitAnalysisRoute);
 app.use('/api/soil', soilRoute);
+app.use('/api/weather', weatherRoute);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

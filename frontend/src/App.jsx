@@ -4,7 +4,7 @@ import {
   CircleDollarSign, Lightbulb, CheckCircle, Sprout,
   MapPin, Phone, Building2, Landmark, ShieldCheck, Sparkles, AlertTriangle, TrendingUp,
   Globe, ChevronDown, Menu, X, 
-  Leaf, FlaskConical, ScrollText, LineChart, Mic, Home as HomeIcon
+  Leaf, FlaskConical, ScrollText, LineChart, Mic, Home as HomeIcon, CloudSun
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
@@ -14,6 +14,7 @@ import SoilTestingLabs from './pages/SoilTestingLabs';
 import GovernmentSchemes from './pages/GovernmentSchemes';
 import VoiceAssistant from './pages/VoiceAssistant';
 import ProfitAnalysis from './pages/ProfitAnalysis';
+import Weather from './pages/Weather';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import translations from './locales/translations';
 import './styles/App.css';
@@ -69,8 +70,8 @@ function AppContent() {
               </div>
               <div className="brand-info">
                 <h1 className="brand-name">
-                  <span className="weight-900">{t.appTitle.split(' ')[0]}</span>
-                  <span className="weight-300">{t.appTitle.split(' ')[1]}</span>
+                  <span className="weight-900">Krishi</span>
+                  <span className="weight-300">Saarthi</span>
                 </h1>
                 <p className="brand-tagline">
                   <Sparkles size={12} /> {t.tagline}
@@ -86,7 +87,7 @@ function AppContent() {
                 onClick={() => setIsLangOpen(!isLangOpen)}
               >
                 <Globe size={18} className="globe-icon-static" />
-                <span>{language === 'en' ? t.english : (language === 'hi' ? t.hindi : t.gujarati)}</span>
+                <span>{language === 'en' ? 'English' : (language === 'hi' ? 'हिंदी' : 'ગુજરાતી')}</span>
                 <ChevronDown size={14} className={`chevron-icon ${isLangOpen ? 'rotate' : ''}`} />
               </button>
 
@@ -103,21 +104,21 @@ function AppContent() {
                       className={`lang-option ${language === 'en' ? 'active' : ''}`}
                       onClick={() => { changeLanguage('en'); setIsLangOpen(false); }}
                     >
-                      <span className="lang-text">{t.english}</span>
+                      <span className="lang-text">English</span>
                       {language === 'en' && <div className="active-dot" />}
                     </button>
                     <button 
                       className={`lang-option ${language === 'hi' ? 'active' : ''}`}
                       onClick={() => { changeLanguage('hi'); setIsLangOpen(false); }}
                     >
-                      <span className="lang-text">{t.hindi}</span>
+                      <span className="lang-text">हिंदी</span>
                       {language === 'hi' && <div className="active-dot" />}
                     </button>
                     <button 
                       className={`lang-option ${language === 'gu' ? 'active' : ''}`}
                       onClick={() => { changeLanguage('gu'); setIsLangOpen(false); }}
                     >
-                      <span className="lang-text">{t.gujarati}</span>
+                      <span className="lang-text">ગુજરાતી</span>
                       {language === 'gu' && <div className="active-dot" />}
                     </button>
                   </motion.div>
@@ -140,8 +141,9 @@ function AppContent() {
             <NavLink to="/questionnaire" icon={ScrollText}>{t.navQuestionnaire}</NavLink>
             <NavLink to="/soil-labs" icon={MapPin}>{t.navSoilLabs}</NavLink>
             <NavLink to="/schemes" icon={Landmark}>{t.navSchemes}</NavLink>
-            <NavLink to="/profit-analysis" icon={LineChart}>{t.navProfitAnalysis || 'Profit Analysis'}</NavLink>
-            <NavLink to="/voice-assistant" icon={Mic}>{t.navVoiceAssistant || 'Voice Assistant'}</NavLink>
+            <NavLink to="/profit-analysis" icon={LineChart}>Profit Analysis</NavLink>
+            <NavLink to="/weather" icon={CloudSun}>Weather</NavLink>
+            <NavLink to="/voice-assistant" icon={Mic}>Voice Assistant</NavLink>
           </ul>
         </div>
       </nav>
@@ -155,6 +157,7 @@ function AppContent() {
           <Route path="/schemes" element={<GovernmentSchemes />} />
           <Route path="/voice-assistant" element={<VoiceAssistant />} />
           <Route path="/profit-analysis" element={<ProfitAnalysis />} />
+          <Route path="/weather" element={<Weather />} />
         </Routes>
       </main>
 
@@ -162,7 +165,7 @@ function AppContent() {
         <div className="container">
           <div className="footer-grid">
             <div className="footer-brand">
-              <h3>{t.appTitle}</h3>
+              <h3>KrishiSaarthi AI</h3>
               <p>{t.tagline}</p>
             </div>
             <div className="footer-copyright">
