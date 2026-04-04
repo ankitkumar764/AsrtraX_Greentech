@@ -4,7 +4,7 @@ import {
   CircleDollarSign, Lightbulb, CheckCircle, Sprout,
   MapPin, Phone, Building2, Landmark, ShieldCheck, Sparkles, AlertTriangle, TrendingUp,
   Globe, ChevronDown, Menu, X, 
-  Leaf, FlaskConical, ScrollText, LineChart, Mic, Home as HomeIcon, CloudSun
+  Leaf, FlaskConical, ScrollText, LineChart, Mic, Home as HomeIcon, CloudSun, Bug
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
@@ -15,12 +15,16 @@ import GovernmentSchemes from './pages/GovernmentSchemes';
 import VoiceAssistant from './pages/VoiceAssistant';
 import ProfitAnalysis from './pages/ProfitAnalysis';
 import Weather from './pages/Weather';
+import Auth from './pages/Auth';
+import DiseaseDetector from './pages/DiseaseDetector';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import translations from './locales/translations';
 import './styles/App.css';
 
 function AppContent() {
   const { language, changeLanguage } = useLanguage();
+  const { user, logout, isLoggedIn }  = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const t = translations[language] || translations['en'];
@@ -81,6 +85,25 @@ function AppContent() {
           </div>
 
           <div className="header-actions">
+            {/* User actions / Auth button */}
+            {isLoggedIn ? (
+              <div className="user-actions-premium">
+                <div className="user-badge-premium">
+                  <span style={{ fontSize: '1.1rem' }}>👤</span>
+                  <span>{user?.name?.split(' ')[0]}</span>
+                </div>
+                <button
+                  className="logout-pill-premium"
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link to="/auth" className="btn-auth-premium">
+                Login / Sign Up
+              </Link>
+            )}
             <div className="lang-selector-premium">
               <button 
                 className={`lang-trigger-premium ${isLangOpen ? 'open' : ''}`}
@@ -143,6 +166,7 @@ function AppContent() {
             <NavLink to="/schemes" icon={Landmark}>{t.navSchemes}</NavLink>
             <NavLink to="/profit-analysis" icon={LineChart}>Profit Analysis</NavLink>
             <NavLink to="/weather" icon={CloudSun}>Weather</NavLink>
+            <NavLink to="/disease-detector" icon={Bug}>{t.navDiseaseDetector}</NavLink>
             <NavLink to="/voice-assistant" icon={Mic}>Voice Assistant</NavLink>
           </ul>
         </div>
@@ -158,6 +182,8 @@ function AppContent() {
           <Route path="/voice-assistant" element={<VoiceAssistant />} />
           <Route path="/profit-analysis" element={<ProfitAnalysis />} />
           <Route path="/weather" element={<Weather />} />
+          <Route path="/disease-detector" element={<DiseaseDetector t={t} language={language} />} />
+          <Route path="/auth" element={<Auth />} />
         </Routes>
       </main>
 
@@ -182,9 +208,11 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <LanguageProvider>
-        <AppContent />
-      </LanguageProvider>
+      <AuthProvider>
+        <LanguageProvider>
+          <AppContent />
+        </LanguageProvider>
+      </AuthProvider>
     </Router>
   );
 }

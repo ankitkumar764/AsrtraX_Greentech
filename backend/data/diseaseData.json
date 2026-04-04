@@ -1,0 +1,50 @@
+[
+  {
+    "crop": "wheat",
+    "symptoms": ["yellow leaves", "stunted growth"],
+    "disease": "Nitrogen Deficiency",
+    "solution": "Apply urea in recommended amount",
+    "prevention": "Ensure balanced soil nutrition before planting",
+    "reason": "Lack of essential nitrogen for chlorophyll production"
+  },
+  {
+    "crop": "rice",
+    "symptoms": ["brown spots", "leaf wilting"],
+    "disease": "Brown Spot Disease",
+    "solution": "Use fungicide and proper irrigation",
+    "prevention": "Avoid water stress and use treated seeds",
+    "reason": "Fungal infection often caused by nutrient imbalance"
+  },
+  {
+    "crop": "maize",
+    "symptoms": ["leaf curling", "white powder"],
+    "disease": "Maize Downy Mildew",
+    "solution": "Apply systemic fungicides like Metalaxyl",
+    "prevention": "Use resistant varieties and crop rotation",
+    "reason": "Fungal growth favored by high humidity"
+  },
+  {
+    "crop": "cotton",
+    "symptoms": ["leaf drop", "wilting"],
+    "disease": "Verticillium Wilt",
+    "solution": "Remove infected plants and improve drainage",
+    "prevention": "Solarize soil and use wilt-resistant seeds",
+    "reason": "Vascular infection blocking water flow"
+  },
+  {
+    "crop": "vegetables",
+    "symptoms": ["holes in leaves", "stunted growth"],
+    "disease": "Pest Attack (Aphids/Caterpillars)",
+    "solution": "Use neem oil spray or organic pesticides",
+    "prevention": "Regular inspection and companion planting",
+    "reason": "Insects feeding on tender leaf tissues"
+  },
+  {
+    "crop": "general",
+    "symptoms": ["wilting", "root rot"],
+    "disease": "Root Rot (Too much water)",
+    "solution": "Reduce watering and improve soil drainage",
+    "prevention": "Avoid over-irrigation and ensure porous soil",
+    "reason": "Lack of oxygen at the roots due to water-logging"
+  }
+]

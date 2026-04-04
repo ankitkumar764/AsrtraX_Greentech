@@ -4,6 +4,8 @@ const sharp = require('sharp');
 const Tesseract = require('tesseract.js');
 const { parseSoilPDF, extractWithAI } = require('../utils/pdfParser');
 const { extractSoilMetrics } = require('../utils/soilParser');
+const SoilReport = require('../models/SoilLab'); // Wait, SoilReport model should be imported
+const SoilReportModel = require('../models/SoilReport');
 
 const router = express.Router();
 
@@ -62,6 +64,28 @@ router.post('/upload-report', upload.single('report'), async (req, res) => {
       };
     }
 
+    // Save to MongoDB
+    try {
+      const newReport = new SoilReportModel({
+        inputs: {
+          file: req.file.originalname,
+          mimetype: req.file.mimetype,
+          size: req.file.size
+        },
+        results: parsingResult,
+        metrics: parsingResult.data,
+        advice: parsingResult.message
+      });
+      console.log('💾 Saving Soil Report to DB:', JSON.stringify({
+        filename: req.file.originalname,
+        metrics: parsingResult.data
+      }, null, 2));
+      await newReport.save();
+      console.log('✅ Soil report saved to MongoDB (Inputs & Results)');
+    } catch (saveError) {
+      console.error('❌ Failed to save soil report:', saveError.message);
+    }
+
     return res.json(parsingResult);
 
   } catch (error) {
@@ -100,11 +124,29 @@ router.post('/extract-from-text', async (req, res) => {
       organicCarbon: data.organicCarbon || null
     };
 
-    return res.json({
+    const result = {
       success: true,
       data: structuredData,
       message: 'Soil data extracted using AI'
-    });
+    };
+
+    // Save to MongoDB
+    try {
+      const newReport = new SoilReportModel({
+        inputs: req.body, // Store complete form input
+        results: result,   // Store complete server response
+        metrics: structuredData,
+        extractedFromText: text.substring(0, 500),
+        advice: 'Extracted via AI'
+      });
+      console.log('💾 Saving AI Text Extraction to DB:', JSON.stringify(structuredData, null, 2));
+      await newReport.save();
+      console.log('✅ AI Text extraction saved to MongoDB (Inputs & Results)');
+    } catch (saveError) {
+      console.error('❌ Failed to save text extraction:', saveError.message);
+    }
+
+    return res.json(result);
   } catch (error) {
     console.error('Text Extraction Error:', error);
     return res.status(500).json({ error: 'Failed to process text' });

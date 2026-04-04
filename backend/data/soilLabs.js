@@ -1,5 +1,4 @@
-// Mock data for soil testing labs
-const soilTestingLabs = {
+const soilLabs = {
   "maharashtra": [
     {
       "id": 1,
@@ -420,4 +419,4 @@ const soilTestingLabs = {
   ]
 };
 
-module.exports = soilTestingLabs;
+module.exports = soilLabs;

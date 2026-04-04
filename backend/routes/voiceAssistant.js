@@ -1,5 +1,6 @@
 const express = require('express');
 const grokService = require('../services/grokService');
+const History = require('../models/History');
 
 const router = express.Router();
 
@@ -41,17 +42,29 @@ router.post('/', async (req, res) => {
     const { transcript } = req.body;
     console.log('Voice query received:', transcript);
 
-    if (!transcript) {
-      return res.status(400).json({ error: 'Transcript is required' });
-    }
-
-    // ✅ DEMO MODE: Always return fixed demo response instantly
-    return res.status(200).json({
+    const result = {
       success: true,
       response: DEMO_RESPONSE,
       timestamp: new Date().toISOString(),
       isFallback: false
-    });
+    };
+
+    // Save to MongoDB History
+    try {
+      const historyEntry = new History({
+        type: 'voice-assistant',
+        inputs: req.body, // Store complete form input (transcript, etc.)
+        results: result    // Store complete server response
+      });
+      console.log('💾 Saving Voice Interaction to DB:', transcript);
+      await historyEntry.save();
+      console.log('✅ Voice assistant interaction saved to MongoDB (Inputs & Results)');
+    } catch (saveError) {
+      console.error('❌ Failed to save voice interaction:', saveError.message);
+    }
+
+    // ✅ DEMO MODE: Always return fixed demo response instantly
+    return res.status(200).json(result);
 
   } catch (error) {
     console.error('Voice assistant error:', error.message);

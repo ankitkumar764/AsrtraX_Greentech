@@ -1,11 +1,12 @@
 const express = require('express');
-const schemes = require('../data/schemes');
+const Scheme = require('../models/Scheme');
 
 const router = express.Router();
 
 // GET /api/schemes/list
-router.get('/list', (req, res) => {
+router.get('/list', async (req, res) => {
   try {
+    const schemes = await Scheme.find({});
     return res.json({
       success: true,
       totalSchemes: schemes.length,
@@ -14,17 +15,17 @@ router.get('/list', (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      error: 'Failed to fetch schemes',
+      error: 'Failed to fetch schemes from database',
       message: error.message
     });
   }
 });
 
 // GET /api/schemes/category/:category
-router.get('/category/:category', (req, res) => {
+router.get('/category/:category', async (req, res) => {
   try {
     const category = req.params.category.toLowerCase();
-    const filtered = schemes.filter(s => s.category.toLowerCase() === category);
+    const filtered = await Scheme.find({ category: new RegExp(category, 'i') });
 
     if (filtered.length === 0) {
       return res.json({
@@ -42,7 +43,7 @@ router.get('/category/:category', (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      error: 'Failed to fetch schemes',
+      error: 'Failed to fetch schemes from database',
       message: error.message
     });
   }

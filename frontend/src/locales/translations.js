@@ -8,6 +8,7 @@ const translations = {
     navQuestionnaire: "Questionnaire",
     navSoilLabs: "Testing Labs",
     navSchemes: "Schemes",
+    navDiseaseDetector: "Disease Detector",
     language: "Language",
     english: "English",
     hindi: "हिंदी",
@@ -411,6 +412,22 @@ const translations = {
     cost: "Cost",
     revenue: "Revenue",
     profit: "Profit",
+
+    // Disease Detector
+    diseaseDetectorTitle: "🔍 Disease Detector",
+    diseaseDetectorDesc: "Identify crop diseases and get expert solutions instantly",
+    selectSymptoms: "Select common symptoms:",
+    describeSymptoms: "Or describe the issue in your own words:",
+    symptomYellowing: "Leaves yellowing",
+    symptomSpots: "Brown spots",
+    symptomPowder: "White powder",
+    symptomWilting: "Wilting",
+    symptomStunted: "Stunted growth",
+    symptomCurling: "Leaf curling",
+    predictDisease: "Detect Disease",
+    possibleDiseases: "Possible Diseases",
+    preventionTips: "Prevention Tips",
+    matchingSymptoms: "Matching Symptoms",
   },
   hi: {
     // Header & Navigation
@@ -421,6 +438,7 @@ const translations = {
     navQuestionnaire: "प्रश्नावली",
     navSoilLabs: "परीक्षण लैब",
     navSchemes: "योजनाएं",
+    navDiseaseDetector: "बीमारी पहचान",
     language: "भाषा",
     english: "English",
     hindi: "हिंदी",
@@ -852,6 +870,22 @@ const translations = {
     cost: "लागत",
     revenue: "राजस्व",
     profit: "लाभ",
+
+    // Disease Detector
+    diseaseDetectorTitle: "🔍 रोग पहचान केंद्र",
+    diseaseDetectorDesc: "फसल की बीमारियों को पहचानें और तुरंत विशेषज्ञ समाधान प्राप्त करें",
+    selectSymptoms: "सामान्य लक्षण चुनें:",
+    describeSymptoms: "या अपने शब्दों में समस्या का वर्णन करें:",
+    symptomYellowing: "पत्तियों का पीला पड़ना",
+    symptomSpots: "भूरे धब्बे",
+    symptomPowder: "सफेદ पाउडर",
+    symptomWilting: "मुरझाना",
+    symptomStunted: "रुका हुआ विकास",
+    symptomCurling: "पत्तियों का मुड़ना",
+    predictDisease: "बीमारी का पता लगाएं",
+    possibleDiseases: "संभावित बीमारियां",
+    preventionTips: "रोकथाम के उपाय",
+    matchingSymptoms: "मिलते-जुलते लक्षण",
   },
   gu: {
     // Header & Navigation
@@ -862,6 +896,7 @@ const translations = {
     navQuestionnaire: "પ્રશ્નાવલી",
     navSoilLabs: "પરીક્ષણ લેબ",
     navSchemes: "યોજનાઓ",
+    navDiseaseDetector: "રોગ નિદાન",
     language: "ભાષા",
     english: "English",
     hindi: "हिंदी",
@@ -1309,6 +1344,22 @@ const translations = {
     cost: "ખર્ચ",
     revenue: "મહેસૂલ",
     profit: "નફો",
+
+    // Disease Detector
+    diseaseDetectorTitle: "🔍 રોગ નિદાન કેન્દ્ર",
+    diseaseDetectorDesc: "પાકની બીમારીઓ ઓળખો અને તરત જ નિષ્ણાત ઉકેલો મેળવો",
+    selectSymptoms: "સામાન્ય લક્ષણો પસંદ કરો:",
+    describeSymptoms: "અથવા તમારા પોતાના શબ્દોમાં સમસ્યાનું વર્ણન કરો:",
+    symptomYellowing: "પાન પીળા પડવા",
+    symptomSpots: "કથ્થઈ ડાઘ",
+    symptomPowder: "સફેદ પાવડર",
+    symptomWilting: "કરમાઈ જવું",
+    symptomStunted: "અટકેલો વિકાસ",
+    symptomCurling: "પાન વળી જવા",
+    predictDisease: "રોગ શોધો",
+    possibleDiseases: "સંભવિત બીમારીઓ",
+    preventionTips: "અટકાવવાના ઉપાયો",
+    matchingSymptoms: "મળતા આવતા લક્ષણો",
   }
 };
 

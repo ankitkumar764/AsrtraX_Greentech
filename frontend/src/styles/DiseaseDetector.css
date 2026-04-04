@@ -1,0 +1,226 @@
+.disease-detector-container {
+  padding-bottom: 100px;
+}
+
+.disease-hero {
+  background: linear-gradient(135deg, var(--dark-color) 0%, #064e3b 100%);
+  padding: 80px 0;
+  text-align: center;
+  color: white;
+  margin-bottom: 50px;
+  position: relative;
+  overflow: hidden;
+}
+
+.disease-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.disease-hero h2 {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  background: linear-gradient(to right, #4ade80, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.disease-hero p {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.disease-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.symptom-card-premium {
+  background: white;
+  padding: 40px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.symptom-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  color: var(--dark-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.symptom-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.symptom-btn {
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid #f1f5f9;
+  background: #f8fafc;
+  color: var(--text-color);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.symptom-btn:hover {
+  border-color: var(--primary-color);
+  background: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.symptom-btn.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+}
+
+.custom-text-area {
+  width: 100%;
+  padding: 20px;
+  border-radius: 15px;
+  border: 2px solid #f1f5f9;
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 120px;
+  margin-bottom: 30px;
+  transition: var(--transition);
+}
+
+.custom-text-area:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 0 15px rgba(46, 204, 113, 0.1);
+}
+
+.disease-result-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.disease-result-card {
+  background: white;
+  border-radius: var(--border-radius);
+  padding: 35px;
+  box-shadow: var(--shadow-md);
+  border-left: 8px solid var(--primary-color);
+  transition: var(--transition);
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.disease-result-card:hover {
+  transform: translateX(10px);
+  box-shadow: var(--shadow-lg);
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.result-header h4 {
+  font-size: 1.8rem;
+  color: var(--dark-color);
+  margin: 0;
+}
+
+.disease-tag {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.result-content {
+  display: grid;
+  gap: 20px;
+}
+
+.result-info-box {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.result-info-box h5 {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-info-box p {
+  color: var(--text-color);
+  font-weight: 500;
+  margin: 0;
+}
+
+.matched-symptoms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.symptom-tag {
+  background: #e2e8f0;
+  color: #475569;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.no-results-premium {
+  text-align: center;
+  padding: 60px;
+  background: #f8fafc;
+  border-radius: var(--border-radius);
+  border: 2px dashed #e2e8f0;
+}
+
+.no-results-premium p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+@media (max-width: 1024px) {
+  .disease-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .disease-hero h2 {
+    font-size: 2.2rem;
+  }
+}

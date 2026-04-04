@@ -1,20 +1,20 @@
 const express = require('express');
-const soilLabs = require('../data/soilLabs');
+const SoilLab = require('../models/SoilLab');
 
 const router = express.Router();
 
 // GET /api/soil-labs/:state
-router.get('/:state', (req, res) => {
+router.get('/:state', async (req, res) => {
   try {
-    const state = req.params.state.toLowerCase().replace(/\s+/g, '_');
-    const labs = soilLabs[state] || [];
+    const state = req.params.state.toLowerCase();
+    // Search with case-insensitive regex for the state field
+    const labs = await SoilLab.find({ state: new RegExp(state, 'i') });
 
     if (labs.length === 0) {
       return res.json({
         success: false,
         message: `No soil testing labs found for ${req.params.state}`,
-        data: [],
-        note: 'Available states: maharashtra, uttar_pradesh, karnataka'
+        data: []
       });
     }
 
@@ -27,26 +27,26 @@ router.get('/:state', (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      error: 'Failed to fetch soil labs',
+      error: 'Failed to fetch soil labs from database',
       message: error.message
     });
   }
 });
 
 // GET /api/soil-labs
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const allLabs = Object.values(soilLabs).flat();
+    const allLabs = await SoilLab.find({});
     return res.json({
       success: true,
       totalLabs: allLabs.length,
       data: allLabs,
       note: 'Query specific state using /api/soil-labs/:state',
-      availableStates: Object.keys(soilLabs).map(s => s.replace(/_/g, ' '))
+      availableStates: [...new Set(allLabs.map(l => l.state))]
     });
   } catch (error) {
     return res.status(500).json({
-      error: 'Failed to fetch soil labs',
+      error: 'Failed to fetch soil labs from database',
       message: error.message
     });
   }
