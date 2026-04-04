@@ -4,7 +4,7 @@ import {
   CircleDollarSign, Lightbulb, CheckCircle, Sprout,
   MapPin, Phone, Building2, Landmark, ShieldCheck, Sparkles, AlertTriangle, TrendingUp,
   Globe, ChevronDown, Menu, X, 
-  Leaf, FlaskConical, ScrollText, LineChart, Mic, Home as HomeIcon, CloudSun, Bug
+  Leaf, FlaskConical, ScrollText, LineChart, Mic, Home as HomeIcon, CloudSun, Bug, User as UserIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
@@ -17,6 +17,7 @@ import ProfitAnalysis from './pages/ProfitAnalysis';
 import Weather from './pages/Weather';
 import Auth from './pages/Auth';
 import DiseaseDetector from './pages/DiseaseDetector';
+import Profile from './pages/Profile';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import translations from './locales/translations';
@@ -89,9 +90,12 @@ function AppContent() {
             {isLoggedIn ? (
               <div className="user-actions-premium">
                 <div className="user-badge-premium">
-                  <span style={{ fontSize: '1.1rem' }}>👤</span>
+                  <UserIcon size={18} className="user-avatar-icon" />
                   <span>{user?.name?.split(' ')[0]}</span>
                 </div>
+                <Link to="/profile" className="profile-pill-premium">
+                  Profile
+                </Link>
                 <button
                   className="logout-pill-premium"
                   onClick={logout}
@@ -183,6 +187,7 @@ function AppContent() {
           <Route path="/profit-analysis" element={<ProfitAnalysis />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/disease-detector" element={<DiseaseDetector t={t} language={language} />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/auth" element={<Auth />} />
         </Routes>
       </main>
