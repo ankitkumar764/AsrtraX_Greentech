@@ -327,7 +327,7 @@ class RecommendationEngine {
     let mlRecommendation = null;
     if (isSoilReport) {
       try {
-        const mlResponse = await axios.post('http://localhost:5000/predict', {
+        const mlResponse = await axios.post('http://localhost:5001/predict', {
           N: parseFloat(inputs.soilN) || 0,
           P: parseFloat(inputs.soilP) || 0,
           K: parseFloat(inputs.soilK) || 0,

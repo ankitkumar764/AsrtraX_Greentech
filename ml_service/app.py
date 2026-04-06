@@ -51,5 +51,5 @@ def health():
     return jsonify({'status': 'healthy', 'model_loaded': model is not None})
 
 if __name__ == '__main__':
-    # Start Flask on port 5000 as requested
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    # Start Flask on port 5001 as requested
+    app.run(host='0.0.0.0', port=5001, debug=True)
